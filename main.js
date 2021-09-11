@@ -1,10 +1,8 @@
-
-
-const fs = require('fs'); // necesitado para guardar/cargar unqfy
-const unqmod = require('./unqfy'); // importamos el modulo unqfy
+const fs = require("fs"); // necesitado para guardar/cargar unqfy
+const unqmod = require("./unqfy"); // importamos el modulo unqfy
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
-function getUNQfy(filename = 'data.json') {
+function getUNQfy(filename = "data.json") {
   let unqfy = new unqmod.UNQfy();
   if (fs.existsSync(filename)) {
     unqfy = unqmod.UNQfy.load(filename);
@@ -12,7 +10,7 @@ function getUNQfy(filename = 'data.json') {
   return unqfy;
 }
 
-function saveUNQfy(unqfy, filename = 'data.json') {
+function saveUNQfy(unqfy, filename = "data.json") {
   unqfy.save(filename);
 }
 
@@ -47,8 +45,25 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 */
 
 function main() {
-  console.log('arguments: ');
-  process.argv.forEach(argument => console.log(argument));
+  console.log("arguments: ");
+  let unqfy = getUNQfy();
+  let functionName = "";
+  let key = "";
+  let value = "";
+  process.argv.forEach((argument,index) => {
+    if (index === 2) {
+      functionName = argument;
+    } else if (index === 3) {
+      key = argument;
+    } else if (index === 4) {
+      value = argument;
+    }
+  });
+  let data = {};
+  data[key] = value;
+  let artist = unqfy[functionName](data);
+  saveUNQfy(unqfy);
+  return console.log(artist);
 }
 
 main();
