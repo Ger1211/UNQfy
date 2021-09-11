@@ -1,0 +1,39 @@
+{
+    "env": {
+        "node": true
+    },
+    "extends": ["eslint:recommended"],
+    "parserOptions": {
+		"ecmaVersion": 7,
+        "sourceType": "module"
+    },
+    "rules": {
+       "no-var": "warn",
+       "no-new-wrappers": "warn",
+       "semi": ["warn", "always"],
+       "quote-props": ["warn", "consistent-as-needed"],
+       "no-unused-vars": "warn",
+
+       "prefer-rest-params": "warn",
+       "prefer-const": "warn",
+       "prefer-arrow-callback": "warn",
+
+       "radix": ["warn", "as-needed"],
+       "eqeqeq": "warn",
+       "no-iterator": "warn",
+       "one-var": ["warn", "never"],
+       "dot-notation": "warn",
+
+       "no-nested-ternary": "warn",
+       "no-unneeded-ternary": "warn",
+       "comma-style": ["warn"],
+       "func-style": ["warn", "declaration", { "allowArrowFunctions": true }],
+       "no-loop-func": "warn",
+       "no-param-reassign": "warn",
+       "no-eval": "warn",
+
+       "require-jsdoc": "off",
+       "react/prop-types": "off",
+       "no-console": "off"
+    }
+}
