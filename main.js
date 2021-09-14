@@ -47,23 +47,24 @@ function saveUNQfy(unqfy, filename = "data.json") {
 function main() {
   console.log("arguments: ");
   let unqfy = getUNQfy();
-  let functionName = "";
-  let key = "";
-  let value = "";
-  process.argv.forEach((argument,index) => {
-    if (index === 2) {
-      functionName = argument;
-    } else if (index === 3) {
-      key = argument;
-    } else if (index === 4) {
-      value = argument;
-    }
-  });
-  let data = {};
-  data[key] = value;
-  let artist = unqfy[functionName](data);
+  const arguments_ = process.argv.splice(2);
+  let artist = undefined;
+  let album = undefined;
+  let track = undefined;
+  if (arguments_[0] === "addArtist") {
+    artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]});
+  }
+  if (arguments_[0] === "addAlbum") {
+    album = unqfy.addAlbum({name: arguments_[1], year: arguments_[2], artistId: arguments_[3]});
+  }
+  if (arguments_[0] === "addTrack") {
+    album = unqfy.addTrack({name: arguments_[1], genre: arguments_[2], duration: arguments_[3], albumId: arguments_[4]});
+  }
+
   saveUNQfy(unqfy);
-  return console.log(artist);
+  console.log(artist);
+  console.log(album);
+  console.log(track);
 }
 
 main();
