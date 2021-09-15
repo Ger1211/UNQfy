@@ -51,20 +51,33 @@ function main() {
   let artist = undefined;
   let album = undefined;
   let track = undefined;
+
   if (arguments_[0] === "addArtist") {
-    artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]});
+    artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]}); //consola: node main.js addArtist name country.
   }
+
+
   if (arguments_[0] === "addAlbum") {
-    album = unqfy.addAlbum(arguments_[3],{name: arguments_[1], year: arguments_[2]});
+    try{
+    album = unqfy.addAlbum(arguments_[3],{name: arguments_[1], year: arguments_[2]});  //consola: node main.js addAlbum name year artistId.
+    } catch(error){
+      console.log(error.message);
+      }
   }
+
+
   if (arguments_[0] === "addTrack") {
-    album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2], duration: arguments_[3]});
+    album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2], duration: arguments_[3]});  //consola: node main.js addTrack name "genre" duration albumId.
   }
 
   saveUNQfy(unqfy);
   console.log(artist);
   console.log(album);
   console.log(track);
+
+
+  console.log(unqfy.getArtistById(1) );
+  
 }
 
 main();

@@ -4,11 +4,14 @@ const fs = require('fs'); // para cargar/guarfar unqfy
 const Artist = require('./domain/artist');
 const Album = require('./domain/album');
 const Track = require('./domain/track');
+const ArtistIdNotFound = require('./exceptions/ArtistIdNotFound');
+
 
 
 class UNQfy {
 
   constructor() {
+    this.playlists = [];
     this.artists = [];
     this.nextArtistId = 1;
     this.nextAlbumId = 1;
@@ -30,8 +33,8 @@ class UNQfy {
     return artist;
   }
 
-  createArtist(artist) {
-    return new Artist(this.getNextArtistId(),artist.name, artist.country);
+  createArtist(artistData) {
+    return new Artist(this.getNextArtistId(),artistData.name, artistData.country);
   }
 
   getNextArtistId() {
@@ -51,12 +54,17 @@ class UNQfy {
      - una propiedad name (string)
      - una propiedad year (number)
   */
-    let album = this.createAlbum(artistId,albumData);
-    return album;
+
+    if(this.getArtistById(artistId) === undefined){
+      throw new ArtistIdNotFound();
+    }else{
+      let album = this.createAlbum(artistId,albumData);
+      return album;
+    }
   }
 
-  createAlbum(artistId,album) {
-    return new Album(this.getNextAlbumId(), album.name, album.year, artistId);
+  createAlbum(artistId,albumData) {
+    return new Album(this.getNextAlbumId(), albumData.name, albumData.year, artistId);
   }
 
   getNextAlbumId() {
@@ -84,8 +92,8 @@ class UNQfy {
       return track;
     }
   
-    createTrack(albumId,track) {
-      return new Track(this.getNextTrackId(), track.name, track.genres.split(","), track.duration, albumId);
+    createTrack(albumId,trackData) {
+      return new Track(this.getNextTrackId(), trackData.name, trackData.genres.split(","), trackData.duration, albumId);
     }
   
     getNextTrackId() {
@@ -98,19 +106,21 @@ class UNQfy {
   
 
   getArtistById(id) {
-
+    return this.artists.filter(artist => artist.id === id)[0];
   }
 
   getAlbumById(id) {
-
+    return this.artists.flatMap(artist => artist.album).filter(album => album.id === id)[0];
   }
+  
 
   getTrackById(id) {
-
+    return this.artists.flatMap(artist => artist.album).flatMap(album => album.track).filter(track => track.id === id)[0];
   }
 
-  getPlaylistById(id) {
 
+  getPlaylistById(id) {
+    return this.playlists.filter(playlist => playlist.id === id)[0];
   }
 
   // genres: array de generos(strings)
