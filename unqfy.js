@@ -55,6 +55,8 @@ class UNQfy {
      - una propiedad year (number)
   */
 
+    
+    //console.log(this.getArtistById(artistId));
     if(this.getArtistById(artistId) === undefined){
       throw new ArtistIdNotFound();
     }else{
@@ -106,21 +108,20 @@ class UNQfy {
   
 
   getArtistById(id) {
-    return this.artists.filter(artist => artist.id === id)[0];
+    return this.artists.filter(artist => artist.id.toString() === id.toString())[0];
   }
 
   getAlbumById(id) {
-    return this.artists.flatMap(artist => artist.album).filter(album => album.id === id)[0];
+    return this.artists.flatMap(artist => artist.album).filter(album => album.id.toString() === id.toString())[0];
   }
   
-
   getTrackById(id) {
-    return this.artists.flatMap(artist => artist.album).flatMap(album => album.track).filter(track => track.id === id)[0];
+    return this.artists.flatMap(artist => artist.album).flatMap(album => album.track).filter(track => track.id.toString() === id.toString())[0];
   }
 
 
   getPlaylistById(id) {
-    return this.playlists.filter(playlist => playlist.id === id)[0];
+    return this.playlists.filter(playlist => playlist.id.toString() === id.toString())[0];
   }
 
   // genres: array de generos(strings)

@@ -56,7 +56,6 @@ function main() {
     artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]}); //consola: node main.js addArtist name country.
   }
 
-
   if (arguments_[0] === "addAlbum") {
     try{
     album = unqfy.addAlbum(arguments_[3],{name: arguments_[1], year: arguments_[2]});  //consola: node main.js addAlbum name year artistId.
@@ -64,7 +63,6 @@ function main() {
       console.log(error.message);
       }
   }
-
 
   if (arguments_[0] === "addTrack") {
     album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2], duration: arguments_[3]});  //consola: node main.js addTrack name "genre" duration albumId.
@@ -76,7 +74,7 @@ function main() {
   console.log(track);
 
 
-  console.log(unqfy.getArtistById(1) );
+  //console.log(unqfy.getArtistById(1));
   
 }
 
