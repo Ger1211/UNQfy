@@ -55,10 +55,10 @@ function main() {
     artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]});
   }
   if (arguments_[0] === "addAlbum") {
-    album = unqfy.addAlbum({name: arguments_[1], year: arguments_[2], artistId: arguments_[3]});
+    album = unqfy.addAlbum(arguments_[3],{name: arguments_[1], year: arguments_[2]});
   }
   if (arguments_[0] === "addTrack") {
-    album = unqfy.addTrack({name: arguments_[1], genre: arguments_[2], duration: arguments_[3], albumId: arguments_[4]});
+    album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2], duration: arguments_[3]});
   }
 
   saveUNQfy(unqfy);
