@@ -108,7 +108,7 @@ class UNQfy {
   }
 
     createTrack(albumId,trackData) {
-      return new Track(this.getNextTrackId(), trackData.name, trackData.genres.split(","), trackData.duration, albumId); 
+      return new Track(this.getNextTrackId(), trackData.name, trackData.genres.split(","), parseInt(trackData.duration), albumId); 
     }
   
     getNextTrackId() {
