@@ -4,8 +4,9 @@ const fs = require('fs'); // para cargar/guarfar unqfy
 const Artist = require('./domain/artist');
 const Album = require('./domain/album');
 const Track = require('./domain/track');
-const ArtistIdNotFound = require('./exceptions/ArtistIdNotFound');
-
+const ArtistIdNotFound = require('./exceptions/artistIdNotFound');
+const ArtistIdDuplicated = require('./exceptions/artistIdDuplicated');
+const AlbumIdNotFound = require('./exceptions/albumIdNotFound');
 
 
 class UNQfy {
@@ -28,9 +29,14 @@ class UNQfy {
     - una propiedad name (string)
     - una propiedad country (string)
   */
-    let artist = this.createArtist(artistData);
-    this.artists.push(artist);
-    return artist;
+
+    if(this.getArtistByName(artistData.name) !== undefined){
+      throw new ArtistIdDuplicated();
+    }else{
+      let artist = this.createArtist(artistData);
+      this.artists.push(artist);
+      return artist;
+    }
   }
 
   createArtist(artistData) {
@@ -56,11 +62,12 @@ class UNQfy {
   */
 
     
-    //console.log(this.getArtistById(artistId));
-    if(this.getArtistById(artistId) === undefined){
+    let artist = this.getArtistById(artistId);
+    if( artist === undefined){
       throw new ArtistIdNotFound();
     }else{
       let album = this.createAlbum(artistId,albumData);
+      artist.albums.push(album);
       return album;
     }
   }
@@ -90,12 +97,18 @@ class UNQfy {
       - una propiedad duration (number),
       - una propiedad genres (lista de strings)
   */
+    let album = this.getAlbumById(albumId);
+    if(album === undefined){
+      throw new AlbumIdNotFound();
+    }else{
       let track = this.createTrack(albumId,trackData);
+      album.tracks.push(track);
       return track;
     }
-  
+  }
+
     createTrack(albumId,trackData) {
-      return new Track(this.getNextTrackId(), trackData.name, trackData.genres.split(","), trackData.duration, albumId);
+      return new Track(this.getNextTrackId(), trackData.name, trackData.genres.split(","), trackData.duration, albumId); 
     }
   
     getNextTrackId() {
@@ -105,18 +118,20 @@ class UNQfy {
     }
 
 
-  
+  getArtistByName(name) {
+    return this.artists.filter(artist => artist.name.toString() === name.toString())[0];
+  }
 
   getArtistById(id) {
     return this.artists.filter(artist => artist.id.toString() === id.toString())[0];
   }
 
   getAlbumById(id) {
-    return this.artists.flatMap(artist => artist.album).filter(album => album.id.toString() === id.toString())[0];
+    return this.artists.flatMap(artist => artist.albums).filter(album => album.id.toString() === id.toString())[0];
   }
   
   getTrackById(id) {
-    return this.artists.flatMap(artist => artist.album).flatMap(album => album.track).filter(track => track.id.toString() === id.toString())[0];
+    return this.artists.flatMap(artist => artist.albums).flatMap(album => album.tracks).filter(track => track.id.toString() === id.toString())[0];
   }
 
 
@@ -127,13 +142,14 @@ class UNQfy {
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
   getTracksMatchingGenres(genres) {
-
+    return this.artists.flatMap(artist => artist.albums).flatMap(album => album.tracks).filter(track => track.genres); //SIN TERMINAR
   }
 
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
   getTracksMatchingArtist(artistName) {
-
+    let artist = this.getArtistByName(artistName);
+    return artist.albums.flatMap(album => album.tracks);
   }
 
 

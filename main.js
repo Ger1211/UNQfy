@@ -53,7 +53,11 @@ function main() {
   let track = undefined;
 
   if (arguments_[0] === "addArtist") {
-    artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]}); //consola: node main.js addArtist name country.
+    try{
+      artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]}); //consola: node main.js addArtist name country.
+    }catch(error){
+      console.log(error.message);
+      }
   }
 
   if (arguments_[0] === "addAlbum") {
@@ -65,8 +69,13 @@ function main() {
   }
 
   if (arguments_[0] === "addTrack") {
-    album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2], duration: arguments_[3]});  //consola: node main.js addTrack name "genre" duration albumId.
-  }
+    try{
+      album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2], duration: arguments_[3]});  //consola: node main.js addTrack name "genre" duration albumId.
+    }catch(error){
+      console.log(error.message);
+      }
+}
+
 
   saveUNQfy(unqfy);
   console.log(artist);
@@ -74,7 +83,10 @@ function main() {
   console.log(track);
 
 
-  //console.log(unqfy.getArtistById(1));
+  //console.log("Artista encontrado: ",unqfy.getArtistById(1).albums[0].tracks[0]);
+  //console.log("Album encontrado: ",unqfy.getAlbumById(1));
+  //console.log("Track encontrado: ",unqfy.getTrackById(1));
+  //console.log("Tracks del usuario encontrado: ",unqfy.getTracksMatchingArtist("Slash"));
   
 }
 

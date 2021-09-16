@@ -3,6 +3,7 @@ class Album {
       this.id = _id;
       this.name = _name;
       this.year = _year;
+      this.tracks = [];
       this.artistId = _artistId;
     }
   }
