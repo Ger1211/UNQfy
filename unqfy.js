@@ -5,9 +5,10 @@ const Artist = require('./domain/artist');
 const Album = require('./domain/album');
 const Track = require('./domain/track');
 const ArtistIdNotFound = require('./exceptions/artistIdNotFound');
-const ArtistIdDuplicated = require('./exceptions/artistIdDuplicated');
+const ArtistNameDuplicated = require('./exceptions/artistNameDuplicated');
 const AlbumIdNotFound = require('./exceptions/albumIdNotFound');
 const TrackIdDuplicated = require('./exceptions/trackIdDuplicated');
+const InvalidArtist = require('./exceptions/invalidArtist');
 
 
 class UNQfy {
@@ -32,7 +33,7 @@ class UNQfy {
   */
 
     if(this.getArtistByName(artistData.name) !== undefined){
-      throw new ArtistIdDuplicated();
+      throw new ArtistNameDuplicated();
     }else{
       let artist = this.createArtist(artistData);
       this.artists.push(artist);
@@ -62,11 +63,16 @@ class UNQfy {
      - una propiedad year (number)
   */
 
+  //VERIFICAR QUE EL ARTISTA NO TENGA ESE MISMO NOMBRE DE ALBUM EN SU LISTA DE ALBUMS.
     
     let artist = this.getArtistById(artistId);
     if( artist === undefined){
       throw new ArtistIdNotFound();
-    }else{
+    } 
+    else if(artist.albums.some(album => album.name.toString() === albumData.name.toString())){
+      throw new InvalidArtist(); 
+     }
+    else{
       let album = this.createAlbum(artistId,albumData);
       artist.albums.push(album);
       return album;
