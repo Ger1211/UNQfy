@@ -77,6 +77,26 @@ function main() {
 }
 
 
+/*
+try {
+    myroutine();      //puede lanzar tres excepciones
+ } catch (error) {
+    if (error instanceof TypeError) {
+        console.log(error.message);
+    } else if (error instanceof RangeError) {
+        console.log(error.message);
+    } else {
+       // Sentencias para manejar una excepcion no esperada
+       throw e
+    }
+}
+*/
+
+
+
+
+
+
   saveUNQfy(unqfy);
   console.log(artist);
   console.log(album);

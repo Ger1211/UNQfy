@@ -7,6 +7,7 @@ const Track = require('./domain/track');
 const ArtistIdNotFound = require('./exceptions/artistIdNotFound');
 const ArtistIdDuplicated = require('./exceptions/artistIdDuplicated');
 const AlbumIdNotFound = require('./exceptions/albumIdNotFound');
+const TrackIdDuplicated = require('./exceptions/trackIdDuplicated');
 
 
 class UNQfy {
@@ -100,7 +101,11 @@ class UNQfy {
     let album = this.getAlbumById(albumId);
     if(album === undefined){
       throw new AlbumIdNotFound();
-    }else{
+    }
+    else if(album.tracks.some(track => track.name.toString() === trackData.name.toString())){
+      throw new TrackIdDuplicated(); 
+    }
+    else{
       let track = this.createTrack(albumId,trackData);
       album.tracks.push(track);
       return track;
