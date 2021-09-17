@@ -6,6 +6,10 @@ class Album {
       this.tracks = [];
       this.artistId = _artistId;
     }
+
+    deleteTrack(name) {
+      this.tracks = this.tracks.filter(tr => tr.name !== name);
+    }
   }
   
   module.exports = Album;
