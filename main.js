@@ -108,6 +108,36 @@ try {
   //console.log("Track encontrado: ",unqfy.getTrackById(1));
   //console.log("Tracks del usuario encontrado: ",unqfy.getTracksMatchingArtist("Slash"));
   
+
+/*
+
+  let list11 = ['rock']
+  let list22 = ["rock"]
+
+  let result = false;
+  for(let i=0; i < (list11.length); i++){ //ejemplo basico
+    console.log(list11[i]);
+    if (list22.includes(list11[i])){
+      result = true;
+    }
+} 
+  console.log("resultado espetado",result);
+    
+*/
+
+  let genres = ['rock'];
+
+  console.log("RESULT ESPERADO", unqfy.getTracksMatchingGenres(genres));
+
+
 }
 
 main();
+
+
+
+
+
+
+
+
