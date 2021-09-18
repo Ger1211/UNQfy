@@ -5,6 +5,15 @@ class Artist {
     this.country = _country;
     this.albums = [];
   }
+
+
+
+eraseAlbum(albumName){
+  this.albums.filter(album => album.name !== albumName);
 }
+
+}
+
+
 
 module.exports = Artist;

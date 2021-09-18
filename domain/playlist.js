@@ -12,6 +12,13 @@ class Playlist {
     hasTrack(track) {
         return this.tracks.some(tr => tr.id.toString() === track.id.toString());
     }
+
+    eraseTrack(name) {
+        this.tracks = this.tracks.filter(tr => tr.name !== name);
+      }
+
+
 }
+
 
 module.exports = Playlist;

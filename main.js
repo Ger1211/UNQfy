@@ -76,25 +76,29 @@ function main() {
       }
 }
 
+  if (arguments_[0] === "deleteTrack") {
+    try{
+      unqfy.deleteTrack(arguments_[1]);  //consola: node main.js deleteTrack name.
+    }catch(error){
+      console.log(error.message);
+      }
+  }
 
-/*
-try {
-    myroutine();      //puede lanzar tres excepciones
- } catch (error) {
-    if (error instanceof TypeError) {
-        console.log(error.message);
-    } else if (error instanceof RangeError) {
-        console.log(error.message);
-    } else {
-       // Sentencias para manejar una excepcion no esperada
-       throw e
-    }
-}
-*/
+  if (arguments_[0] === "deleteAlbum") {
+    try{
+      unqfy.deleteAlbum(arguments_[1]);  //consola: node main.js deleteAlbum name.
+    }catch(error){
+      console.log(error.message);
+      }
+  }
 
-
-
-
+  if (arguments_[0] === "deleteArtist") {
+    try{
+      unqfy.deleteArtist(arguments_[1]);  //consola: node main.js deleteArtist name.
+    }catch(error){
+      console.log(error.message);
+      }
+  }
 
 
   saveUNQfy(unqfy);
@@ -105,13 +109,13 @@ try {
 
   //console.log("Artista encontrado: ",unqfy.getArtistById(1).albums[0].tracks[0]);
   //console.log("Album encontrado: ",unqfy.getAlbumById(1));
-  //console.log("Track encontrado: ",unqfy.getTrackById(1));
+  //console.log("Track encontrado: ",unqfy.getTrackById(4));
   //console.log("Tracks del usuario encontrado: ",unqfy.getTracksMatchingArtist("Slash"));
   
-  let genres = ['rock'];
+  //let genres = ['rock'];
 
-  console.log("RESULT ESPERADO", unqfy.getTracksMatchingGenres(genres));
-  console.log("RESULT ESPERADO PLAYLIST", unqfy.createPlaylist('myPlaylist',genres, 100));
+  //console.log("RESULT ESPERADO", unqfy.getTracksMatchingGenres(genres));
+  //console.log("RESULT ESPERADO PLAYLIST", unqfy.createPlaylist('myPlaylist',genres, 100));
 
 }
 

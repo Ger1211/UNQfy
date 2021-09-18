@@ -7,9 +7,15 @@ class Album {
       this.artistId = _artistId;
     }
 
-    deleteTrack(name) {
+    eraseTrack(name) {
       this.tracks = this.tracks.filter(tr => tr.name !== name);
     }
+
+    deleteAllTracks(){
+      this.tracks = [];
+    }
+
+
   }
   
   module.exports = Album;

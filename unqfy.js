@@ -10,7 +10,13 @@ const ArtistNameDuplicated = require('./exceptions/artistNameDuplicated');
 const AlbumIdNotFound = require('./exceptions/albumIdNotFound');
 const TrackIdDuplicated = require('./exceptions/trackIdDuplicated');
 const InvalidArtist = require('./exceptions/invalidArtist');
+const TrackDoesntExist = require('./exceptions/trackDoesntExist');
+const AlbumDoesntExist = require('./exceptions/albumDoesntExist');
+const ArtistDoesntExist = require('./exceptions/artistDoesntExist');
 
+
+
+TrackDoesntExist
 
 class UNQfy {
 
@@ -131,25 +137,33 @@ class UNQfy {
     }
 
 
+  getArtistById(id) {
+    return this.artists.find(artist => artist.id.toString() === id.toString());
+  }
+
   getArtistByName(name) {
     return this.artists.find(artist => artist.name.toString() === name.toString());
   }
-
-  getArtistById(id) {
-    return this.artists.filter(artist => artist.id.toString() === id.toString())[0];
-  }
-
+ 
   getAlbumById(id) {
-    return this.artists.flatMap(artist => artist.albums).filter(album => album.id.toString() === id.toString())[0];
+    return this.artists.flatMap(artist => artist.albums).find(album => album.id.toString() === id.toString());
   }
-  
+
+  getAlbumByName(name) {
+    return this.artists.flatMap(artist => artist.albums).find(album => album.name.toString() === name.toString());
+  }
+
   getTrackById(id) {
-    return this.artists.flatMap(artist => artist.albums).flatMap(album => album.tracks).filter(track => track.id.toString() === id.toString())[0];
+    return this.artists.flatMap(artist => artist.albums).flatMap(album => album.tracks).find(track => track.id.toString() === id.toString());
+  }
+
+  getTrackByName(name) {
+    return this.artists.flatMap(artist => artist.albums).flatMap(album => album.tracks).find(track => track.name.toString() === name.toString());
   }
 
 
   getPlaylistById(id) {
-    return this.playlists.filter(playlist => playlist.id.toString() === id.toString())[0];
+    return this.playlists.find(playlist => playlist.id.toString() === id.toString());
   }
 
   // genres: array de generos(strings)
@@ -165,8 +179,33 @@ class UNQfy {
     return artist.albums.flatMap(album => album.tracks);
   }
 
+
   deleteTrack(name){
-    this.artists.flatMap(artist => artist.albums).find(album => album.tracks.some(track => track.name === name)).deleteTrack(name);
+    if(this.getTrackByName(name) === undefined){
+      throw new TrackDoesntExist();
+    }else{
+      this.artists.flatMap(artist => artist.albums).find(album => album.tracks.some(track => track.name === name)).eraseTrack(name);
+      this.playlists.filter(playlist => playlist.tracks.some(track => track.name === name)).forEach( playlist => playlist.eraseTrack(name));
+    }
+  }
+
+  deleteAlbum(name){
+    if(this.getAlbumByName(name) === undefined){
+      throw new AlbumDoesntExist();
+    }else{
+      this.artists.flatMap(artist => artist.albums).find(album => album.name === name).tracks.forEach( track => this.deleteTrack(track.name));
+      this.artists.find(artist => artist.albums.some(album => album.name === name)).eraseAlbum(name);
+    }
+  }
+
+
+  deleteArtist(name){
+    if(this.getArtistByName(name) === undefined){
+      throw new ArtistDoesntExist();
+    }else{
+      this.artists.flatMap(artist => artist.albums).forEach(album => this.deleteAlbum(album.name));
+      this.artists = this.artists.filter(artist => artist.name !== name);
+    }
   }
 
 
