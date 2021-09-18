@@ -4,6 +4,7 @@ const fs = require('fs'); // para cargar/guarfar unqfy
 const Artist = require('./domain/artist');
 const Album = require('./domain/album');
 const Track = require('./domain/track');
+const Playlist = require('./domain/playlist');
 const ArtistIdNotFound = require('./exceptions/artistIdNotFound');
 const ArtistNameDuplicated = require('./exceptions/artistNameDuplicated');
 const AlbumIdNotFound = require('./exceptions/albumIdNotFound');
@@ -19,6 +20,7 @@ class UNQfy {
     this.nextArtistId = 1;
     this.nextAlbumId = 1;
     this.nextTrackId = 1;
+    this.nextPlaylistId = 1;
   }
 
   // artistData: objeto JS con los datos necesarios para crear un artista
@@ -119,7 +121,7 @@ class UNQfy {
   }
 
     createTrack(albumId,trackData) {
-      return new Track(this.getNextTrackId(), trackData.name, trackData.genres.split(","), parseInt(trackData.duration), albumId); 
+      return new Track(this.getNextTrackId(), trackData.name, trackData.genres, parseInt(trackData.duration), albumId); 
     }
   
     getNextTrackId() {
@@ -130,7 +132,7 @@ class UNQfy {
 
 
   getArtistByName(name) {
-    return this.artists.filter(artist => artist.name.toString() === name.toString())[0];
+    return this.artists.find(artist => artist.name.toString() === name.toString());
   }
 
   getArtistById(id) {
@@ -179,7 +181,45 @@ class UNQfy {
       * un metodo duration() que retorne la duración de la playlist.
       * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
   */
+    let playlist = this.createNewPlaylist(name);
+    let tracks = this.getTracksMatchingGenres(genresToInclude);
+    playlist.tracks  = this.generateRandomTracks(tracks, maxDuration);
+    this.playlists.push(playlist);
+    return playlist;
+  }
 
+  generateRandomTracks(tracks, maxDuration) {
+    let tracksToInclude = [];
+    let tracksToAdd = tracks;
+    while(maxDuration > 0 && tracksToAdd.length !== 0) {
+      let random = Math.floor(Math.random() * (tracksToAdd.length - 1));
+      let trackToAdd = tracksToAdd[random];
+      tracksToAdd = tracksToAdd.filter(track => track.id.toString() !== trackToAdd.id.toString());
+      if(maxDuration >= trackToAdd.duration) {
+        tracksToInclude.push(trackToAdd);
+        maxDuration -= trackToAdd.duration;
+      }
+    }
+    return tracksToInclude;
+  }
+
+  createNewPlaylist(name) {
+    return new Playlist(this.getNextPlaylistId(), name);
+  }
+
+  getNextPlaylistId() {
+    let nextId = this.nextPlaylistId;
+    this.nextPlaylistId++;
+    return nextId;
+  }
+
+  searchByName(name) {
+    let result = {}
+    result.artists = this.artists.filter(artist => artist.name.includes(name));
+    result.albums = this.artists.flatMap(artist => artist.albums).filter(album => album.name.includes(name));
+    result.tracks = this.artists.flatMap(artist => artist.albums).flatMap(album => album.tracks).filter(track => track.name.includes(name));
+    result.playlists = this.playlists.filter(playlist => playlist.name.includes(name));
+    return result;
   }
 
   save(filename) {
@@ -190,7 +230,7 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, {encoding: 'utf-8'});
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track ] // Playlist, User];
+    const classes = [UNQfy, Artist, Album, Track, Playlist];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }
@@ -198,6 +238,5 @@ class UNQfy {
 // COMPLETAR POR EL ALUMNO: exportar todas las clases que necesiten ser utilizadas desde un modulo cliente
 module.exports = {
   UNQfy: UNQfy,
-  Artist: Artist,
 };
 

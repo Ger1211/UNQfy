@@ -70,7 +70,7 @@ function main() {
 
   if (arguments_[0] === "addTrack") {
     try{
-      album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2], duration: arguments_[3]});  //consola: node main.js addTrack name "genre" duration albumId.
+      album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2].split(","), duration: arguments_[3]});  //consola: node main.js addTrack name "genre" duration albumId.
     }catch(error){
       console.log(error.message);
       }
@@ -108,26 +108,10 @@ try {
   //console.log("Track encontrado: ",unqfy.getTrackById(1));
   //console.log("Tracks del usuario encontrado: ",unqfy.getTracksMatchingArtist("Slash"));
   
-
-/*
-
-  let list11 = ['rock']
-  let list22 = ["rock"]
-
-  let result = false;
-  for(let i=0; i < (list11.length); i++){ //ejemplo basico
-    console.log(list11[i]);
-    if (list22.includes(list11[i])){
-      result = true;
-    }
-} 
-  console.log("resultado espetado",result);
-    
-*/
-
   let genres = ['rock'];
 
   console.log("RESULT ESPERADO", unqfy.getTracksMatchingGenres(genres));
+  console.log("RESULT ESPERADO PLAYLIST", unqfy.createPlaylist('myPlaylist',genres, 100));
 
 }
 
