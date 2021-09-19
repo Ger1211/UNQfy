@@ -100,12 +100,40 @@ function main() {
       }
   }
 
+  if (arguments_[0] === "addUser") {
+    try{
+      unqfy.addUser({username: arguments_[1]});  //consola: node main.js addUser username.
+    }catch(error){
+      console.log(error.message);
+      }
+  }
+  
+  if (arguments_[0] === "listen") {
+    try{
+      unqfy.listen(arguments_[1], arguments_[2]);  //consola: node main.js listen username trackName.
+    }catch(error){
+      console.log(error.message);
+      }
+  }
+  
+  if (arguments_[0] === "findUserByUsername") {
+    try{
+      unqfy.findUserByUsername(arguments_[1]);  //consola: node main.js findUserByUsername username.
+    }catch(error){
+      console.log(error.message);
+      }
+  }
+  
+  if (arguments_[0] === "threeMostListen") {
+    try{
+      unqfy.threeMostListen(arguments_[1]);  //consola: node main.js threeMostListen artistName.
+    }catch(error){
+      console.log(error.message);
+      }
+  }
+
 
   saveUNQfy(unqfy);
-  console.log(artist);
-  console.log(album);
-  console.log(track);
-
 
   //console.log("Artista encontrado: ",unqfy.getArtistById(1).albums[0].tracks[0]);
   //console.log("Album encontrado: ",unqfy.getAlbumById(1));

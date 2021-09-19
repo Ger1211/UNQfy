@@ -5,6 +5,8 @@ const Artist = require('./domain/artist');
 const Album = require('./domain/album');
 const Track = require('./domain/track');
 const Playlist = require('./domain/playlist');
+const User = require('./domain/user');
+const Listened = require('./domain/listened');
 const ArtistIdNotFound = require('./exceptions/artistIdNotFound');
 const ArtistNameDuplicated = require('./exceptions/artistNameDuplicated');
 const AlbumIdNotFound = require('./exceptions/albumIdNotFound');
@@ -23,10 +25,12 @@ class UNQfy {
   constructor() {
     this.playlists = [];
     this.artists = [];
+    this.users = [];
     this.nextArtistId = 1;
     this.nextAlbumId = 1;
     this.nextTrackId = 1;
     this.nextPlaylistId = 1;
+    this.nextUserId = 1;
   }
 
   // artistData: objeto JS con los datos necesarios para crear un artista
@@ -261,6 +265,54 @@ class UNQfy {
     return result;
   }
 
+  addUser(userData) {
+    let user = this.createUser(userData)
+    return this.users.push(user);
+  }
+
+  createUser(userData) {
+    return new User(this.getNextUserId(),userData.username);
+  }
+
+  getNextUserId() {
+    let nextId = this.nextUserId;
+    this.nextUserId++;
+    return nextId;
+  }
+
+  listen(username, trackName) {
+    let user = this.users.find(user => user.username === username);
+    let track = this.getTrackByName(trackName);
+    return user.listen(track);
+  }
+
+  findUserByUsername(username) {
+    return console.log(this.users.find(user => user.username === username));
+  }
+
+  threeMostListen(artistName) {
+    let artist = this.artists.find(artist => artist.name === artistName);
+    let tracks = artist.albums.flatMap(album => album.tracks);
+    let listenedOfArtistTracks = this.users.flatMap(user => user.listened).filter(listened => tracks.map(track => track.id).includes(listened.track.id));
+    let mostListenedTracks = tracks.map(track => {
+      let sumListened = {track: track, quantity: listenedOfArtistTracks.filter(listened => listened.track.id === track.id).map(listened => listened.quantity).reduce((acc, num) =>  num + acc,0)};
+      return sumListened; 
+    })
+    let order = mostListenedTracks.sort(this.compare);
+
+    console.log("This is the three most listened of " + artistName + "\n 1." + order[0].track.name + "\n 2." + order[1].track.name + "\n 3." + order[2].track.name); 
+  }
+
+  compare( a, b ) {
+    if ( a.quantity > b.quantity ){
+      return -1;
+    }
+    if ( a.quantity < b.quantity ){
+      return 1;
+    }
+    return 0;
+  }
+
   save(filename) {
     const serializedData = picklify.picklify(this);
     fs.writeFileSync(filename, JSON.stringify(serializedData, null, 2));
@@ -269,7 +321,7 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, {encoding: 'utf-8'});
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track, Playlist];
+    const classes = [UNQfy, Artist, Album, Track, Playlist, User, Listened];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }
