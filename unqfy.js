@@ -33,7 +33,6 @@ class UNQfy {
     this.nextUserId = 1;
   }
 
-  //ALGO
 
   // artistData: objeto JS con los datos necesarios para crear un artista
   //   artistData.name (string)

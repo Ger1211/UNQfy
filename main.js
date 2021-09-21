@@ -52,90 +52,101 @@ function main() {
   let album = undefined;
   let track = undefined;
 
-  if (arguments_[0] === "addArtist") {
-    try{
-      artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]}); //consola: node main.js addArtist name country.
-    }catch(error){
-      console.log(error.message);
-      }
-  }
 
-  if (arguments_[0] === "addAlbum") {
-    try{
-    album = unqfy.addAlbum(arguments_[3],{name: arguments_[1], year: arguments_[2]});  //consola: node main.js addAlbum name year artistId.
-    } catch(error){
-      console.log(error.message);
-      }
-  }
+  let invocation = arguments_[0];
 
-  if (arguments_[0] === "addTrack") {
-    try{
-      album = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2].split(","), duration: arguments_[3]});  //consola: node main.js addTrack name "genre" duration albumId.
-    }catch(error){
-      console.log(error.message);
-      }
+switch(invocation){
+
+    case "addArtist":
+      try{
+        artist = unqfy.addArtist({name: arguments_[1], country:arguments_[2]}); //consola: node main.js addArtist name country.
+        console.log("New Artist: ",artist);
+      }catch(error){
+        console.log(error.message);
+        }
+        break;    
+
+    case "addAlbum":
+      try{
+        album = unqfy.addAlbum(arguments_[3],{name: arguments_[1], year: arguments_[2]});  //consola: node main.js addAlbum name year artistId.
+        console.log("New Album: ",album);
+        } catch(error){
+          console.log(error.message);
+          }
+        break;
+
+    case "addTrack":     
+      try{
+        track = unqfy.addTrack(arguments_[4],{name: arguments_[1], genres: arguments_[2].split(","), duration: arguments_[3]});  //consola: node main.js addTrack name "genre" duration albumId.
+        console.log(track);
+      }catch(error){
+        console.log("New Track: ",error.message);
+        }
+      break;
+
+    case "deleteTrack":     
+      try{
+        unqfy.deleteTrack(arguments_[1]);  //consola: node main.js deleteTrack name.
+      }catch(error){
+        console.log(error.message);
+        }
+      break;
+
+    case "deleteAlbum":     
+      try{
+        unqfy.deleteAlbum(arguments_[1]);  //consola: node main.js deleteAlbum name.
+      }catch(error){
+        console.log(error.message);
+        }
+      break;
+
+    case "deleteArtist":     
+      try{
+        unqfy.deleteArtist(arguments_[1]);  //consola: node main.js deleteArtist name.
+      }catch(error){
+        console.log(error.message);
+        }
+      break;
+
+    case "addUser":     
+      try{
+        unqfy.addUser({username: arguments_[1]});  //consola: node main.js addUser username.
+      }catch(error){
+        console.log(error.message);
+        }
+      break;
+
+    case "listen":     
+      try{
+        unqfy.listen(arguments_[1], arguments_[2]);  //consola: node main.js listen username trackName.
+      }catch(error){
+        console.log(error.message);
+        }
+      break;
+
+    case "findUserByUsername":     
+      try{
+        unqfy.findUserByUsername(arguments_[1]);  //consola: node main.js findUserByUsername username.
+      }catch(error){
+        console.log(error.message);
+        }
+      break;
+
+    case "threeMostListen":     
+      try{
+        unqfy.threeMostListen(arguments_[1]);  //consola: node main.js threeMostListen artistName.
+      }catch(error){
+        console.log(error.message);
+        }
+      break;    
 }
 
-  if (arguments_[0] === "deleteTrack") {
-    try{
-      unqfy.deleteTrack(arguments_[1]);  //consola: node main.js deleteTrack name.
-    }catch(error){
-      console.log(error.message);
-      }
-  }
-
-  if (arguments_[0] === "deleteAlbum") {
-    try{
-      unqfy.deleteAlbum(arguments_[1]);  //consola: node main.js deleteAlbum name.
-    }catch(error){
-      console.log(error.message);
-      }
-  }
-
-  if (arguments_[0] === "deleteArtist") {
-    try{
-      unqfy.deleteArtist(arguments_[1]);  //consola: node main.js deleteArtist name.
-    }catch(error){
-      console.log(error.message);
-      }
-  }
-
-  if (arguments_[0] === "addUser") {
-    try{
-      unqfy.addUser({username: arguments_[1]});  //consola: node main.js addUser username.
-    }catch(error){
-      console.log(error.message);
-      }
-  }
-  
-  if (arguments_[0] === "listen") {
-    try{
-      unqfy.listen(arguments_[1], arguments_[2]);  //consola: node main.js listen username trackName.
-    }catch(error){
-      console.log(error.message);
-      }
-  }
-  
-  if (arguments_[0] === "findUserByUsername") {
-    try{
-      unqfy.findUserByUsername(arguments_[1]);  //consola: node main.js findUserByUsername username.
-    }catch(error){
-      console.log(error.message);
-      }
-  }
-  
-  if (arguments_[0] === "threeMostListen") {
-    try{
-      unqfy.threeMostListen(arguments_[1]);  //consola: node main.js threeMostListen artistName.
-    }catch(error){
-      console.log(error.message);
-      }
-  }
 
 
   saveUNQfy(unqfy);
 
   //console.log("Artista encontrado: ",unqfy.getArtistById(1).albums[0].tracks[0]);
+  //console.log("Tracks de  artista: ", unqfy.getArtistById(1).albums.flatMap(album => album.tracks));
   //console.log("Album encontrado: ",unqfy.getAlbumById(1));
   //console.log("Track encontrado: ",unqfy.getTrackById(4));
   //console.log("Tracks del usuario encontrado: ",unqfy.getTracksMatchingArtist("Slash"));
@@ -148,11 +159,3 @@ function main() {
 }
 
 main();
-
-
-
-
-
-
-
-
