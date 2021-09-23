@@ -14,11 +14,12 @@ class User {
   }
 
   allListened() {
-      return this.listened.map(listen => listen.track);
+    return this.listened.map((listen) => listen.track);
   }
 
   listened(track) {
-      return this.listened.find(listen => listen.track.id === track.id).quantity;
+    return this.listened.find((listen) => listen.track.id === track.id)
+      .quantity;
   }
 }
 

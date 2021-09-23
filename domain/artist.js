@@ -6,14 +6,9 @@ class Artist {
     this.albums = [];
   }
 
-
-
-eraseAlbum(albumName){
-  this.albums.filter(album => album.name !== albumName);
+  eraseAlbum(albumName) {
+    this.albums.filter((album) => album.name !== albumName);
+  }
 }
-
-}
-
-
 
 module.exports = Artist;
