@@ -276,6 +276,13 @@ class UNQfy {
     return playlist;
   }
 
+  allPlaylist() {
+    return console.log(this.playlists.map(pl => {
+      let playlist = {id: pl.id, name: pl.name, tracks: JSON.stringify(pl.tracks)}
+      return playlist;
+    }));
+  }
+
   generateRandomTracks(tracks, maxDuration) {
     let tracksToInclude = [];
     let tracksToAdd = tracks;
@@ -343,7 +350,10 @@ class UNQfy {
   }
 
   findUserByUsername(username) {
-    return console.log(this.users.find((user) => user.username === username));
+    return console.log(this.users.find((user) => user.username === username).listened.map(lis => {
+      let listen = {track: JSON.stringify(lis.track), quantity: lis.quantity};
+      return listen;
+    }));
   }
 
   threeMostListen(artistName) {

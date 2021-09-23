@@ -118,6 +118,14 @@ function execFunction(invocation, unqfy, arguments_) {
     case "getTracksMatchingGenres":
       execGetTracksMatchingGenres(unqfy, arguments_);
       break;
+    
+    case "createPlaylist":
+      execCreatePlaylist(unqfy, arguments_);
+      break;
+    
+    case "allPlaylist":
+      execAllPlaylist(unqfy);
+      break;
   }
 }
 
@@ -249,6 +257,22 @@ function execGetTracksMatchingArtist(unqfy, arguments_) {
 function execGetTracksMatchingGenres(unqfy, arguments_) {
   try {
     unqfy.getTracksMatchingGenres(arguments_[1].split(",")); //consola: node main.js getTracksMatchingGenres genres.
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function execCreatePlaylist(unqfy, arguments_) {
+  try {
+    unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]); //consola: node main.js createPlaylist name genresToInclude maxDuration.
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function execAllPlaylist(unqfy) {
+  try {
+    unqfy.allPlaylist(); //consola: node main.js allPlaylist.
   } catch (error) {
     console.log(error.message);
   }
