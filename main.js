@@ -54,6 +54,8 @@ function main() {
   execFunction(invocation, unqfy, arguments_);
 
   saveUNQfy(unqfy);
+
+  unqfy.threeMostListen('german');
 }
 
 main();
@@ -120,60 +122,31 @@ function execFunction(invocation, unqfy, arguments_) {
       break;
   }
 }
-function execThreeMostListen(unqfy, arguments_) {
+
+function execAddArtist(unqfy, arguments_) {
   try {
-    unqfy.threeMostListen(arguments_[1]); //consola: node main.js threeMostListen artistName.
+    let artist = unqfy.addArtist({
+      name: arguments_[1],
+      country: arguments_[2],
+    }); //consola: node main.js addArtist name country.
+    console.log("New Artist: ", artist);
   } catch (error) {
     console.log(error.message);
   }
+  return artist;
 }
 
-function execFindUserByUsername(unqfy, arguments_) {
+function execAddAlbum(unqfy, arguments_) {
   try {
-    unqfy.findUserByUsername(arguments_[1]); //consola: node main.js findUserByUsername username.
+    let album = unqfy.addAlbum(arguments_[3], {
+      name: arguments_[1],
+      year: arguments_[2],
+    }); //consola: node main.js addAlbum name year artistId.
+    console.log("New Album: ", album);
   } catch (error) {
     console.log(error.message);
   }
-}
-
-function execListen(unqfy, arguments_) {
-  try {
-    unqfy.listen(arguments_[1], arguments_[2]); //consola: node main.js listen username trackName.
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-function execAddUser(unqfy, arguments_) {
-  try {
-    unqfy.addUser({ username: arguments_[1] }); //consola: node main.js addUser username.
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-function execDeleteArtist(unqfy, arguments_) {
-  try {
-    unqfy.deleteArtist(arguments_[1]); //consola: node main.js deleteArtist name.
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-function execDeleteAlbum(unqfy, arguments_) {
-  try {
-    unqfy.deleteAlbum(arguments_[1]); //consola: node main.js deleteAlbum name.
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-function execDeleteTrack(unqfy, arguments_) {
-  try {
-    unqfy.deleteTrack(arguments_[1]); //consola: node main.js deleteTrack name.
-  } catch (error) {
-    console.log(error.message);
-  }
+  return album;
 }
 
 function execAddTrack(unqfy, arguments_) {
@@ -190,30 +163,28 @@ function execAddTrack(unqfy, arguments_) {
   return track;
 }
 
-function execAddAlbum(unqfy, arguments_) {
+function execDeleteTrack(unqfy, arguments_) {
   try {
-    let album = unqfy.addAlbum(arguments_[3], {
-      name: arguments_[1],
-      year: arguments_[2],
-    }); //consola: node main.js addAlbum name year artistId.
-    console.log("New Album: ", album);
+    unqfy.deleteTrack(arguments_[1]); //consola: node main.js deleteTrack name.
   } catch (error) {
     console.log(error.message);
   }
-  return album;
 }
 
-function execAddArtist(unqfy, arguments_) {
+function execDeleteAlbum(unqfy, arguments_) {
   try {
-    let artist = unqfy.addArtist({
-      name: arguments_[1],
-      country: arguments_[2],
-    }); //consola: node main.js addArtist name country.
-    console.log("New Artist: ", artist);
+    unqfy.deleteAlbum(arguments_[1]); //consola: node main.js deleteAlbum name.
   } catch (error) {
     console.log(error.message);
   }
-  return artist;
+}
+
+function execDeleteArtist(unqfy, arguments_) {
+  try {
+    unqfy.deleteArtist(arguments_[1]); //consola: node main.js deleteArtist name.
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 function execAllArtist(unqfy) {
@@ -235,6 +206,38 @@ function execAllAlbumsOfArtist(unqfy, arguments_) {
 function execAllTracksOfAlbum(unqfy, arguments_) {
   try {
     unqfy.allTracksOfAlbum(arguments_[1]); //consola: node main.js allTracksOfAlbum albumId.
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function execAddUser(unqfy, arguments_) {
+  try {
+    unqfy.addUser({ username: arguments_[1] }); //consola: node main.js addUser username.
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function execListen(unqfy, arguments_) {
+  try {
+    unqfy.listen(arguments_[1], arguments_[2]); //consola: node main.js listen username trackName.
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function execFindUserByUsername(unqfy, arguments_) {
+  try {
+    unqfy.findUserByUsername(arguments_[1]); //consola: node main.js findUserByUsername username.
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function execThreeMostListen(unqfy, arguments_) {
+  try {
+    unqfy.threeMostListen(arguments_[1]); //consola: node main.js threeMostListen artistName.
   } catch (error) {
     console.log(error.message);
   }

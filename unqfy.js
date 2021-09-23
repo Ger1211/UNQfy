@@ -6,7 +6,7 @@ const Track = require("./domain/track");
 const Playlist = require("./domain/playlist");
 const User = require("./domain/user");
 const Listened = require("./domain/listened");
-const ArtistIdNotFound = require("./exceptions/artistIdNotFound");
+const ArtistNotFound = require("./exceptions/artistNotFound");
 const ArtistNameDuplicated = require("./exceptions/artistNameDuplicated");
 const AlbumIdNotFound = require("./exceptions/albumIdNotFound");
 const TrackIdDuplicated = require("./exceptions/trackIdDuplicated");
@@ -40,7 +40,7 @@ class UNQfy {
     - una propiedad country (string)
   */
 
-    if (this.getArtistByName(artistData.name) !== undefined) {
+    if (this.getArtistByName(artistData.name)) {
       throw new ArtistNameDuplicated();
     } else {
       let artist = this.createArtist(artistData);
@@ -77,8 +77,8 @@ class UNQfy {
     //VERIFICAR QUE EL ARTISTA NO TENGA ESE MISMO NOMBRE DE ALBUM EN SU LISTA DE ALBUMS.
 
     let artist = this.getArtistById(artistId);
-    if (artist === undefined) {
-      throw new ArtistIdNotFound();
+    if (!artist) {
+      throw new ArtistNotFound();
     } else if (
       artist.albums.some(
         (album) => album.name.toString() === albumData.name.toString()
@@ -120,7 +120,7 @@ class UNQfy {
       - una propiedad genres (lista de strings)
   */
     let album = this.getAlbumById(albumId);
-    if (album === undefined) {
+    if (!album) {
       throw new AlbumIdNotFound();
     } else if (
       album.tracks.some(
@@ -199,11 +199,11 @@ class UNQfy {
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
   getTracksMatchingGenres(genres) {
     let tracks = this.artists
-    .flatMap((artist) => artist.albums)
-    .flatMap((album) => album.tracks)
-    .filter((track) =>
-      track.genres.some((genre) => genres.some((gen) => gen === genre))
-    )
+      .flatMap((artist) => artist.albums)
+      .flatMap((album) => album.tracks)
+      .filter((track) =>
+        track.genres.some((genre) => genres.some((gen) => gen === genre))
+      );
     console.log(tracks);
     return tracks;
   }
@@ -218,7 +218,7 @@ class UNQfy {
   }
 
   deleteTrack(name) {
-    if (this.getTrackByName(name)) {
+    if (!this.getTrackByName(name)) {
       throw new TrackDoesntExist();
     } else {
       this.artists
@@ -234,7 +234,7 @@ class UNQfy {
   }
 
   deleteAlbum(name) {
-    if (this.getAlbumByName(name)) {
+    if (!this.getAlbumByName(name)) {
       throw new AlbumDoesntExist();
     } else {
       this.artists
@@ -248,7 +248,7 @@ class UNQfy {
   }
 
   deleteArtist(name) {
-    if (this.getArtistByName(name)) {
+    if (!this.getArtistByName(name)) {
       throw new ArtistDoesntExist();
     } else {
       this.artists
@@ -348,34 +348,38 @@ class UNQfy {
 
   threeMostListen(artistName) {
     let artist = this.artists.find((artist) => artist.name === artistName);
-    let tracks = artist.albums.flatMap((album) => album.tracks);
-    let listenedOfArtistTracks = this.users
-      .flatMap((user) => user.listened)
-      .filter((listened) =>
-        tracks.map((track) => track.id).includes(listened.track.id)
-      );
-    let mostListenedTracks = tracks.map((track) => {
-      let sumListened = {
-        track: track,
-        quantity: listenedOfArtistTracks
-          .filter((listened) => listened.track.id === track.id)
-          .map((listened) => listened.quantity)
-          .reduce((acc, num) => num + acc, 0),
-      };
-      return sumListened;
-    });
-    let order = mostListenedTracks.sort(this.compare);
+    if (!artist) {
+      throw new ArtistNotFound();
+    } else {
+      let tracks = artist.albums.flatMap((album) => album.tracks);
+      let listenedOfArtistTracks = this.users
+        .flatMap((user) => user.listened)
+        .filter((listened) =>
+          tracks.map((track) => track.id).includes(listened.track.id)
+        );
+      let mostListenedTracks = tracks.map((track) => {
+        let sumListened = {
+          track: track,
+          quantity: listenedOfArtistTracks
+            .filter((listened) => listened.track.id === track.id)
+            .map((listened) => listened.quantity)
+            .reduce((acc, num) => num + acc, 0),
+        };
+        return sumListened;
+      });
+      let order = mostListenedTracks.sort(this.compare);
 
-    console.log(
-      "This is the three most listened of " +
-        artistName +
-        "\n 1." +
-        order[0].track.name +
-        "\n 2." +
-        order[1].track.name +
-        "\n 3." +
-        order[2].track.name
-    );
+      console.log(
+        "This is the three most listened of " +
+          artistName +
+          "\n 1." +
+          order[0].track.name +
+          "\n 2." +
+          order[1].track.name +
+          "\n 3." +
+          order[2].track.name
+      );
+    }
   }
 
   compare(a, b) {
