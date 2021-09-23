@@ -54,23 +54,21 @@ function main() {
   execFunction(invocation, unqfy, arguments_);
 
   saveUNQfy(unqfy);
-
-  unqfy.threeMostListen('german');
 }
 
 main();
 function execFunction(invocation, unqfy, arguments_) {
   switch (invocation) {
     case "addArtist":
-      execAddArtist(artist, unqfy, arguments_);
+      execAddArtist(unqfy, arguments_);
       break;
 
     case "addAlbum":
-      execAddAlbum(album, unqfy, arguments_);
+      execAddAlbum(unqfy, arguments_);
       break;
 
     case "addTrack":
-      execAddTrack(track, unqfy, arguments_);
+      execAddTrack(unqfy, arguments_);
       break;
 
     case "deleteTrack":
@@ -133,7 +131,6 @@ function execAddArtist(unqfy, arguments_) {
   } catch (error) {
     console.log(error.message);
   }
-  return artist;
 }
 
 function execAddAlbum(unqfy, arguments_) {
@@ -146,7 +143,6 @@ function execAddAlbum(unqfy, arguments_) {
   } catch (error) {
     console.log(error.message);
   }
-  return album;
 }
 
 function execAddTrack(unqfy, arguments_) {
@@ -160,7 +156,6 @@ function execAddTrack(unqfy, arguments_) {
   } catch (error) {
     console.log("New Track: ", error.message);
   }
-  return track;
 }
 
 function execDeleteTrack(unqfy, arguments_) {
