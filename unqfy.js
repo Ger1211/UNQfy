@@ -343,7 +343,7 @@ class UNQfy {
     result.playlists = this.playlists.filter((playlist) =>
       playlist.name.includes(name)
     );
-    return console.log(result);
+    return result;
   }
 
   addUser(userData) {

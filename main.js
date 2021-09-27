@@ -287,7 +287,7 @@ function execAllPlaylist(unqfy) {
 
 function execSearchByName(unqfy, arguments_) {
   try {
-    unqfy.searchByName(arguments_[1]); //consola: node main.js searchByName name.
+    console.log(unqfy.searchByName(arguments_[1])); //consola: node main.js searchByName name.
   } catch (error) {
     console.log(error.message);
   }
