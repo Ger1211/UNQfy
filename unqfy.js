@@ -6,16 +6,7 @@ const Track = require("./domain/track");
 const Playlist = require("./domain/playlist");
 const User = require("./domain/user");
 const Listened = require("./domain/listened");
-const ArtistNotFound = require("./exceptions/artistNotFound");
-const ArtistNameDuplicated = require("./exceptions/artistNameDuplicated");
-const AlbumIdNotFound = require("./exceptions/albumIdNotFound");
-const TrackIdDuplicated = require("./exceptions/trackIdDuplicated");
-const InvalidArtist = require("./exceptions/invalidArtist");
-const TrackDoesntExist = require("./exceptions/trackDoesntExist");
-const AlbumDoesntExist = require("./exceptions/albumDoesntExist");
-const ArtistDoesntExist = require("./exceptions/artistDoesntExist");
-
-TrackDoesntExist;
+const { EntityIdDoesntExist, EntityNameDoesntExist, EntityNameDuplicated, AlbumIdNotFound, InvalidArtist } = require("./exceptions/exceptions");
 
 class UNQfy {
   constructor() {
@@ -40,13 +31,17 @@ class UNQfy {
     - una propiedad country (string)
   */
 
-    if (this.getArtistByName(artistData.name)) {
-      throw new ArtistNameDuplicated();
+    if (this.existArtist(artistData)) {
+      throw new EntityNameDuplicated("Artist", artistData.name);
     } else {
       let artist = this.createArtist(artistData);
       this.artists.push(artist);
       return artist;
     }
+  }
+
+  existArtist(artistData) {
+    return this.getArtistByName(artistData.name);
   }
 
   createArtist(artistData) {
@@ -77,19 +72,25 @@ class UNQfy {
     //VERIFICAR QUE EL ARTISTA NO TENGA ESE MISMO NOMBRE DE ALBUM EN SU LISTA DE ALBUMS.
 
     let artist = this.getArtistById(artistId);
-    if (!artist) {
-      throw new ArtistNotFound();
-    } else if (
-      artist.albums.some(
-        (album) => album.name.toString() === albumData.name.toString()
-      )
-    ) {
-      throw new InvalidArtist();
+    if (this.doesntExistArtist(artist)) {
+        throw new EntityIdDoesntExist("Artist", artistId);
+    } else if (this.albumDuplicatedOnArtist(artist, albumData)) {
+        throw new InvalidArtist();
     } else {
-      let album = this.createAlbum(artistId, albumData);
-      artist.albums.push(album);
-      return album;
+        let album = this.createAlbum(artistId, albumData);
+        artist.albums.push(album);
+        return album;
     }
+  }
+
+  albumDuplicatedOnArtist(artist, albumData) {
+    return artist.albums.some(
+      (album) => album.name.toString() === albumData.name.toString()
+    );
+  }
+
+  doesntExistArtist(artist) {
+    return !artist;
   }
 
   createAlbum(artistId, albumData) {
@@ -120,19 +121,25 @@ class UNQfy {
       - una propiedad genres (lista de strings)
   */
     let album = this.getAlbumById(albumId);
-    if (!album) {
-      throw new AlbumIdNotFound();
-    } else if (
-      album.tracks.some(
-        (track) => track.name.toString() === trackData.name.toString()
-      )
-    ) {
-      throw new TrackIdDuplicated();
+    if (this.doesntExistAlbum(album)) {
+        throw new AlbumIdNotFound();
+    } else if (this.trackDuplicatedOnAlbum(album, trackData)) {
+        throw new EntityNameDuplicated("Track", trackData.name);
     } else {
-      let track = this.createTrack(albumId, trackData);
-      album.tracks.push(track);
-      return track;
+        let track = this.createTrack(albumId, trackData);
+        album.tracks.push(track);
+        return track;
     }
+  }
+
+  trackDuplicatedOnAlbum(album, trackData) {
+    return album.tracks.some(
+      (track) => track.name.toString() === trackData.name.toString()
+    );
+  }
+
+  doesntExistAlbum(album) {
+    return !album;
   }
 
   createTrack(albumId, trackData) {
@@ -218,8 +225,8 @@ class UNQfy {
   }
 
   deleteTrack(name) {
-    if (!this.getTrackByName(name)) {
-      throw new TrackDoesntExist();
+    if (this.doesntExistTrackByName(name)) {
+      throw new EntityNameDoesntExist("Track", name);
     } else {
       this.artists
         .flatMap((artist) => artist.albums)
@@ -233,9 +240,13 @@ class UNQfy {
     }
   }
 
+  doesntExistTrackByName(name) {
+    return !this.getTrackByName(name);
+  }
+
   deleteAlbum(name) {
-    if (!this.getAlbumByName(name)) {
-      throw new AlbumDoesntExist();
+    if (this.doesntExistAlbumByName(name)) {
+      throw new EntityNameDoesntExist("Album", name);
     } else {
       this.artists
         .flatMap((artist) => artist.albums)
@@ -247,15 +258,23 @@ class UNQfy {
     }
   }
 
+  doesntExistAlbumByName(name) {
+    return !this.getAlbumByName(name);
+  }
+
   deleteArtist(name) {
-    if (!this.getArtistByName(name)) {
-      throw new ArtistDoesntExist();
+    if (this.doesntExistArtistByName(name)) {
+      throw new EntityNameDoesntExist("Artist", name);
     } else {
       this.artists
         .flatMap((artist) => artist.albums)
         .forEach((album) => this.deleteAlbum(album.name));
       this.artists = this.artists.filter((artist) => artist.name !== name);
     }
+  }
+
+  doesntExistArtistByName(name) {
+    return !this.getArtistByName(name);
   }
 
   // name: nombre de la playlist
@@ -285,16 +304,15 @@ class UNQfy {
 
   generateRandomTracks(tracks, maxDuration) {
     let tracksToInclude = [];
-    let tracksToAdd = tracks;
-    while (maxDuration > 0 && tracksToAdd.length !== 0) {
+    let tracksToAdd = tracks.slice();
+    let maxDurationCopy = maxDuration;
+    while (maxDurationCopy > 0 && tracksToAdd.length !== 0) {
       let random = Math.floor(Math.random() * (tracksToAdd.length - 1));
       let trackToAdd = tracksToAdd[random];
-      tracksToAdd = tracksToAdd.filter(
-        (track) => track.id.toString() !== trackToAdd.id.toString()
-      );
-      if (maxDuration >= trackToAdd.duration) {
+      tracksToAdd.splice(random, 1);
+      if (maxDurationCopy >= trackToAdd.duration) {
         tracksToInclude.push(trackToAdd);
-        maxDuration -= trackToAdd.duration;
+        maxDurationCopy -= trackToAdd.duration;
       }
     }
     return tracksToInclude;
@@ -325,7 +343,7 @@ class UNQfy {
     result.playlists = this.playlists.filter((playlist) =>
       playlist.name.includes(name)
     );
-    return result;
+    return console.log(result);
   }
 
   addUser(userData) {
@@ -345,8 +363,16 @@ class UNQfy {
 
   listen(username, trackName) {
     let user = this.users.find((user) => user.username === username);
-    let track = this.getTrackByName(trackName);
-    return user.listen(track);
+    if(!user) {
+      throw new EntityNameDoesntExist("User", username);
+    } else {
+      let track = this.getTrackByName(trackName);
+      if (!track) {
+        throw new EntityNameDoesntExist("Track", trackName);
+      } else {
+        return user.listen(track);
+      }
+    }
   }
 
   findUserByUsername(username) {
@@ -359,7 +385,7 @@ class UNQfy {
   threeMostListen(artistName) {
     let artist = this.artists.find((artist) => artist.name === artistName);
     if (!artist) {
-      throw new ArtistNotFound();
+      throw new EntityNameDoesntExist("Artist", );
     } else {
       let tracks = artist.albums.flatMap((album) => album.tracks);
       let listenedOfArtistTracks = this.users

@@ -126,6 +126,13 @@ function execFunction(invocation, unqfy, arguments_) {
     case "allPlaylist":
       execAllPlaylist(unqfy);
       break;
+
+    case "searchByName":
+      execSearchByName(unqfy, arguments_);
+      break;
+
+    default:
+      console.log("The command",invocation, "does not exist.");
   }
 }
 
@@ -273,6 +280,14 @@ function execCreatePlaylist(unqfy, arguments_) {
 function execAllPlaylist(unqfy) {
   try {
     unqfy.allPlaylist(); //consola: node main.js allPlaylist.
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function execSearchByName(unqfy, arguments_) {
+  try {
+    unqfy.searchByName(arguments_[1]); //consola: node main.js searchByName name.
   } catch (error) {
     console.log(error.message);
   }
