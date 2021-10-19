@@ -6,6 +6,10 @@ class Artist {
     this.albums = [];
   }
 
+  getId() {
+    return this.id;
+  }
+
   eraseAlbum(albumName) {
     this.albums.filter((album) => album.name !== albumName);
   }

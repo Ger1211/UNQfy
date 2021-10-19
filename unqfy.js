@@ -6,6 +6,7 @@ const Track = require("./domain/track");
 const Playlist = require("./domain/playlist");
 const User = require("./domain/user");
 const Listened = require("./domain/listened");
+const spotify = require("./services/spotify");
 const { EntityIdDoesntExist, EntityNameDoesntExist, EntityNameDuplicated, AlbumIdNotFound, InvalidArtist } = require("./exceptions/exceptions");
 
 class UNQfy {
@@ -461,6 +462,21 @@ class UNQfy {
         .flatMap((album) => album.tracks)
         .filter((track) => track.albumId === albumId)
     );
+  }
+
+  populateAlbumsForArtist(artistName) {
+    let artist = this.getArtistByName(artistName);
+    if (artist != undefined) {
+      spotify.default.getAllAlbumsFromArtist(artistName)
+        .then(response => this.createAlbumsFromArtist(artist, response))
+        .then(() => this.save("data.json"))
+    } else {
+      throw new EntityNameDoesntExist("Artist", artistName);
+    }
+  }
+
+  createAlbumsFromArtist(artist, response) {
+    response.items.forEach(alb => this.addAlbum(artist.getId(), {name: alb.name, year: alb.release_date}))
   }
 
   save(filename) {

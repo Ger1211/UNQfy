@@ -47,7 +47,7 @@ function saveUNQfy(unqfy, filename = "data.json") {
 
 */
 
-function main() {
+async function main() {
   console.log("arguments: ");
   let unqfy = getUNQfy();
   const arguments_ = process.argv.splice(2);
@@ -55,9 +55,12 @@ function main() {
 
   execFunction(invocation, unqfy, arguments_);
 
-  saveUNQfy(unqfy);
+  // unqfy.populateAlbumsForArtist("Charly García")
+  // unqfy.allAlbumsOfArtist(1);
+  // saveUNQfy(unqfy);
 
-  // spotify.default.getAllAlbumsFromArtist("Queen").then(response => console.log(response.items.map(item => item.name)));
+  // spotify.default.getAllAlbumsFromArtist("Queen").then(response => {
+  //   console.log(response.items.map(item => item.name))});
   // musixmatch.default.getTrackLyric("Despacito Luis Fonsi");
   // musixmatch.default.getTrackLyric("Bohemiam Rhapsody");
   // musixmatch.default.getTrackLyric("Ciudad Mágica");
@@ -140,6 +143,10 @@ function execFunction(invocation, unqfy, arguments_) {
 
     case "searchByName":
       execSearchByName(unqfy, arguments_);
+      break;
+
+    case "populateAlbumsForArtist":
+      execPopulateAlbumsForArtist(unqfy, arguments_);
       break;
 
     default:
@@ -300,6 +307,14 @@ function execSearchByName(unqfy, arguments_) {
   try {
     console.log(unqfy.searchByName(arguments_[1])); //consola: node main.js searchByName name.
   } catch (error) {
+    console.log(error.message);
+  }
+}
+
+function execPopulateAlbumsForArtist(unqfy, arguments_) {
+  try {
+    console.log(unqfy.populateAlbumsForArtist(arguments_[1])) //consola: node main.js populateAlbumsForArtist artistName
+  } catch(error) {
     console.log(error.message);
   }
 }
