@@ -5,7 +5,9 @@
   "main": "main.js",
   "dependencies": {
     "chai": "^4.1.2",
-    "picklify": "github:lwoites/picklify"
+    "express": "^4.17.1",
+    "picklify": "github:lwoites/picklify",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "eslint": "^4.19.1",

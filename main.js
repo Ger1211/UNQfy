@@ -1,6 +1,8 @@
 const fs = require("fs"); // necesitado para guardar/cargar unqfy
 const unqfy = require("./unqfy");
 const unqmod = require("./unqfy"); // importamos el modulo unqfy
+const spotify = require("./services/spotify");
+const musixmatch = require("./services/musixmatch")
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = "data.json") {
@@ -54,6 +56,15 @@ function main() {
   execFunction(invocation, unqfy, arguments_);
 
   saveUNQfy(unqfy);
+
+  // spotify.default.getAllAlbumsFromArtist("Queen").then(response => console.log(response.items.map(item => item.name)));
+  // musixmatch.default.getTrackLyric("Despacito Luis Fonsi");
+  // musixmatch.default.getTrackLyric("Bohemiam Rhapsody");
+  // musixmatch.default.getTrackLyric("Ciudad Mágica");
+  // musixmatch.default.getTrackLyric("Gracias a la vida");
+  // musixmatch.default.getTrackLyric("Rasguña las piedras")
+  //   .then(response => console.log(response.message.body.lyrics.lyrics_body))
+  //   .catch(() => console.log("The song has not lyrics."));
 }
 
 main();
