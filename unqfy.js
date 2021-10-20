@@ -469,7 +469,8 @@ class UNQfy {
     if (artist != undefined) {
       spotify.default.getAllAlbumsFromArtist(artistName)
         .then(response => this.createAlbumsFromArtist(artist, response))
-        .then(() => this.save("data.json"))
+        .then( () => this.save("data.json")
+        );
     } else {
       throw new EntityNameDoesntExist("Artist", artistName);
     }

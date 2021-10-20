@@ -55,12 +55,12 @@ async function main() {
 
   execFunction(invocation, unqfy, arguments_);
 
-  // unqfy.populateAlbumsForArtist("Charly García")
-  // unqfy.allAlbumsOfArtist(1);
-  // saveUNQfy(unqfy);
+  // unqfy.populateAlbumsForArtist("CharlyGarcia")
+   //unqfy.allAlbumsOfArtist(1);
+  saveUNQfy(unqfy);
 
-  // spotify.default.getAllAlbumsFromArtist("Queen").then(response => {
-  //   console.log(response.items.map(item => item.name))});
+   //spotify.default.getAllAlbumsFromArtist("CharlyGarcia").then(response => {
+    //console.log(response.items.map(item => item.name))});
   // musixmatch.default.getTrackLyric("Despacito Luis Fonsi");
   // musixmatch.default.getTrackLyric("Bohemiam Rhapsody");
   // musixmatch.default.getTrackLyric("Ciudad Mágica");
@@ -68,6 +68,9 @@ async function main() {
   // musixmatch.default.getTrackLyric("Rasguña las piedras")
   //   .then(response => console.log(response.message.body.lyrics.lyrics_body))
   //   .catch(() => console.log("The song has not lyrics."));
+
+  //unqfy.allAlbumsOfArtist(1);
+  //console.log(unqfy.getArtistById(1))
 }
 
 main();
