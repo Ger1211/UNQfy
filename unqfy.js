@@ -503,10 +503,8 @@ class UNQfy {
     let track = this.getTrackByName(trackName);
     if (track != undefined) {
       if (track.lyrics === "") {
-        musixmatch.default.getTrackLyric(track.name)
-       .then(response => track.lyrics = response.message.body.lyrics.lyrics_body)
-       .then(() => this.save("data.json"))
-       .catch(() => console.log("The song has not lyrics."));
+        track.getLyrics()
+        .then(() => this.save("data.json"))
       } else {
         return track.lyrics;
        }

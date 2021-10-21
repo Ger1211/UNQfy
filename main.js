@@ -63,8 +63,9 @@ async function main() {
   // musixmatch.default.getTrackLyric("Ciudad Mágica");
   // musixmatch.default.getTrackLyric("Gracias a la vida");
   // musixmatch.default.getTrackLyric("Rasguña las piedras")
-  //    .then(response => console.log(response.message.body.lyrics.lyrics_body))
-  //    .catch(() => console.log("The song has not lyrics."));
+   // musixmatch.default.getTrackLyric("Gracias a la vida")
+    //  .then(response => console.log(response.message.body.lyrics.lyrics_body))
+    //  .catch(() => console.log("The song has not lyrics."));
 
   //unqfy.allAlbumsOfArtist(1);
   //console.log(unqfy.getArtistById(1))
