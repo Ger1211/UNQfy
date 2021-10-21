@@ -76,7 +76,7 @@ class UNQfy {
     if (this.doesntExistArtist(artist)) {
         throw new EntityIdDoesntExist("Artist", artistId);
     } else if (this.albumDuplicatedOnArtist(artist, albumData)) {
-        throw new InvalidArtist();
+        throw new InvalidArtist(artist.getId());
     } else {
         let album = this.createAlbum(artistId, albumData);
         artist.albums.push(album);
@@ -467,17 +467,17 @@ class UNQfy {
   populateAlbumsForArtist(artistName) {
     let artist = this.getArtistByName(artistName);
     if (artist != undefined) {
-      spotify.default.getAllAlbumsFromArtist(artistName)
-        .then(response => this.createAlbumsFromArtist(artist, response))
-        .then( () => this.save("data.json")
-        );
+        spotify.default.getAllAlbumsFromArtist(artistName)
+          .then(response => this.createAlbumsFromArtist(artist, response))
+          .then( () => this.save("data.json"))
+          .catch( error => console.log(error.message));
     } else {
       throw new EntityNameDoesntExist("Artist", artistName);
     }
   }
 
   createAlbumsFromArtist(artist, response) {
-    response.items.forEach(alb => this.addAlbum(artist.getId(), {name: alb.name, year: alb.release_date}))
+    response.items.forEach(alb => this.addAlbum(artist.getId().toString(), {name: alb.name, year: alb.release_date}))
   }
 
   save(filename) {

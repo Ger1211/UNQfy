@@ -35,7 +35,7 @@ class EntityIdDuplicated extends Error {
 class InvalidArtist extends Error {
   constructor(artistId) {
     super(`The Artist with id ${artistId} is already used in another album with the same name. Please use other`);
-    this.message =`The Artist with id ${artistId} is already used in another album with the same name. Please use other.`;
+    this.message =`The Artist with id ${artistId} has another album with the same name. Please use other.`;
   }
 }
 
