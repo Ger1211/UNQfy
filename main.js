@@ -63,11 +63,12 @@ async function main() {
   // musixmatch.default.getTrackLyric("Ciudad Mágica");
   // musixmatch.default.getTrackLyric("Gracias a la vida");
   // musixmatch.default.getTrackLyric("Rasguña las piedras")
-  //   .then(response => console.log(response.message.body.lyrics.lyrics_body))
-  //   .catch(() => console.log("The song has not lyrics."));
+  //    .then(response => console.log(response.message.body.lyrics.lyrics_body))
+  //    .catch(() => console.log("The song has not lyrics."));
 
   //unqfy.allAlbumsOfArtist(1);
   //console.log(unqfy.getArtistById(1))
+  console.log(unqfy.getLyrics("Rasguña las piedras"));
 }
 
 main();
@@ -147,6 +148,10 @@ function execFunction(invocation, unqfy, arguments_) {
 
     case "populateAlbumsForArtist":
       execPopulateAlbumsForArtist(unqfy, arguments_);
+      break;
+    
+    case "getLyrics":
+      execGetLyrics(unqfy, arguments_);
       break;
 
     default:
@@ -332,6 +337,14 @@ function execSearchByName(unqfy, arguments_) {
 function execPopulateAlbumsForArtist(unqfy, arguments_) {
   try {
     console.log(unqfy.populateAlbumsForArtist(arguments_[1])) //consola: node main.js populateAlbumsForArtist artistName
+  } catch(error) {
+    console.log(error.message);
+  }
+}
+
+function execGetLyrics(unqfy, arguments_) {
+  try {
+    console.log(unqfy.getLyrics(arguments_[1])) // consola: node main.js getLyrics trackName
   } catch(error) {
     console.log(error.message);
   }

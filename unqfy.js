@@ -7,7 +7,13 @@ const Playlist = require("./domain/playlist");
 const User = require("./domain/user");
 const Listened = require("./domain/listened");
 const spotify = require("./services/spotify");
-const { EntityIdDoesntExist, EntityNameDoesntExist, EntityNameDuplicated, AlbumIdNotFound, InvalidArtist } = require("./exceptions/exceptions");
+const {
+  EntityIdDoesntExist,
+  EntityNameDoesntExist,
+  EntityNameDuplicated,
+  AlbumIdNotFound,
+  InvalidArtist,
+} = require("./exceptions/exceptions");
 
 class UNQfy {
   constructor() {
@@ -74,13 +80,13 @@ class UNQfy {
 
     let artist = this.getArtistById(artistId);
     if (this.doesntExistArtist(artist)) {
-        throw new EntityIdDoesntExist("Artist", artistId);
+      throw new EntityIdDoesntExist("Artist", artistId);
     } else if (this.albumDuplicatedOnArtist(artist, albumData)) {
-        throw new InvalidArtist(artist.getId());
+      throw new InvalidArtist(artist.getId());
     } else {
-        let album = this.createAlbum(artistId, albumData);
-        artist.albums.push(album);
-        return album;
+      let album = this.createAlbum(artistId, albumData);
+      artist.albums.push(album);
+      return album;
     }
   }
 
@@ -123,13 +129,13 @@ class UNQfy {
   */
     let album = this.getAlbumById(albumId);
     if (this.doesntExistAlbum(album)) {
-        throw new AlbumIdNotFound();
+      throw new AlbumIdNotFound();
     } else if (this.trackDuplicatedOnAlbum(album, trackData)) {
-        throw new EntityNameDuplicated("Track", trackData.name);
+      throw new EntityNameDuplicated("Track", trackData.name);
     } else {
-        let track = this.createTrack(albumId, trackData);
-        album.tracks.push(track);
-        return track;
+      let track = this.createTrack(albumId, trackData);
+      album.tracks.push(track);
+      return track;
     }
   }
 
@@ -297,10 +303,16 @@ class UNQfy {
   }
 
   allPlaylist() {
-    return console.log(this.playlists.map(pl => {
-      let playlist = {id: pl.id, name: pl.name, tracks: JSON.stringify(pl.tracks)}
-      return playlist;
-    }));
+    return console.log(
+      this.playlists.map((pl) => {
+        let playlist = {
+          id: pl.id,
+          name: pl.name,
+          tracks: JSON.stringify(pl.tracks),
+        };
+        return playlist;
+      })
+    );
   }
 
   generateRandomTracks(tracks, maxDuration) {
@@ -364,7 +376,7 @@ class UNQfy {
 
   listen(username, trackName) {
     let user = this.users.find((user) => user.username === username);
-    if(!user) {
+    if (!user) {
       throw new EntityNameDoesntExist("User", username);
     } else {
       let track = this.getTrackByName(trackName);
@@ -377,16 +389,23 @@ class UNQfy {
   }
 
   findUserByUsername(username) {
-    return console.log(this.users.find((user) => user.username === username).listened.map(lis => {
-      let listen = {track: JSON.stringify(lis.track), quantity: lis.quantity};
-      return listen;
-    }));
+    return console.log(
+      this.users
+        .find((user) => user.username === username)
+        .listened.map((lis) => {
+          let listen = {
+            track: JSON.stringify(lis.track),
+            quantity: lis.quantity,
+          };
+          return listen;
+        })
+    );
   }
 
   threeMostListen(artistName) {
     let artist = this.artists.find((artist) => artist.name === artistName);
     if (!artist) {
-      throw new EntityNameDoesntExist("Artist", );
+      throw new EntityNameDoesntExist("Artist");
     } else {
       let tracks = artist.albums.flatMap((album) => album.tracks);
       let listenedOfArtistTracks = this.users
@@ -467,17 +486,33 @@ class UNQfy {
   populateAlbumsForArtist(artistName) {
     let artist = this.getArtistByName(artistName);
     if (artist != undefined) {
-        spotify.default.getAllAlbumsFromArtist(artistName)
-          .then(response => this.createAlbumsFromArtist(artist, response))
-          .then( () => this.save("data.json"))
-          .catch( error => console.log(error.message));
+      spotify.default
+        .getAllAlbumsFromArtist(artistName)
+        .then((response) => this.createAlbumsFromArtist(artist, response))
+        .then(() => this.save("data.json"))
+        .catch((error) => console.log(error.message));
     } else {
       throw new EntityNameDoesntExist("Artist", artistName);
     }
   }
 
+  async getLyrics(trackName) {
+    let track = this.getTrackByName(trackName);
+    if (track != undefined) {
+      const lyrics = await track.getLyrics();
+      return lyrics;
+    } else {
+      throw EntityNameDoesntExist("Track", trackName);
+    }
+  }
+
   createAlbumsFromArtist(artist, response) {
-    response.items.forEach(alb => this.addAlbum(artist.getId().toString(), {name: alb.name, year: alb.release_date}))
+    response.items.forEach((alb) =>
+      this.addAlbum(artist.getId().toString(), {
+        name: alb.name,
+        year: alb.release_date,
+      })
+    );
   }
 
   save(filename) {
