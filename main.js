@@ -68,7 +68,9 @@ async function main() {
 
   //unqfy.allAlbumsOfArtist(1);
   //console.log(unqfy.getArtistById(1))
-  console.log(unqfy.getLyrics("Rasguña las piedras"));
+  //console.log(unqfy.getLyrics("Rasguña las piedras"));
+
+  //console.log(unqfy.getTrackById(3).lyrics);
 }
 
 main();
@@ -195,7 +197,7 @@ function execAddTrack(unqfy, arguments_) {
     console.log(track);
     saveUNQfy(unqfy);
   } catch (error) {
-    console.log("New Track: ", error.message);
+    console.log("error: ", error.message);
   }
 }
 

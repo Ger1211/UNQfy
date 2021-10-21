@@ -7,6 +7,9 @@ const Playlist = require("./domain/playlist");
 const User = require("./domain/user");
 const Listened = require("./domain/listened");
 const spotify = require("./services/spotify");
+const musixmatch = require("./services/musixmatch");
+
+
 const {
   EntityIdDoesntExist,
   EntityNameDoesntExist,
@@ -496,15 +499,25 @@ class UNQfy {
     }
   }
 
-  async getLyrics(trackName) {
+   getLyrics(trackName) {
     let track = this.getTrackByName(trackName);
     if (track != undefined) {
-      const lyrics = await track.getLyrics();
-      return lyrics;
+      if (track.lyrics === "") {
+        musixmatch.default.getTrackLyric(track.name)
+       .then(response => track.lyrics = response.message.body.lyrics.lyrics_body)
+       .then(() => this.save("data.json"))
+       .catch(() => console.log("The song has not lyrics."));
+      } else {
+        return track.lyrics;
+       }
     } else {
-      throw EntityNameDoesntExist("Track", trackName);
+      throw new EntityNameDoesntExist("Track", trackName);
     }
   }
+
+
+
+
 
   createAlbumsFromArtist(artist, response) {
     response.items.forEach((alb) =>

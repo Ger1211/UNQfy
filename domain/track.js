@@ -9,18 +9,20 @@ class Track {
     this.lyrics = "";
   }
 
-  async getLyrics() {
+  /*
+   getLyrics() {
     if (this.lyrics === "") {
-        const response = musixmatch.default.getTrackLyric(this.name)
+           musixmatch.default.getTrackLyric(this.name)
           .then(response => this.lyrics = response.message.body.lyrics.lyrics_body)
-          .then(() => this.lyrics)
           .catch(() => console.log("The song has not lyrics."));
-        const lyrics = await response;
-        return lyrics;
     } else {
        return this.lyrics;
     }
   }
+
+  */
 }
+
+
 
 module.exports = Track;
