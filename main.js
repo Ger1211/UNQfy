@@ -59,11 +59,11 @@ async function main() {
    //spotify.default.getAllAlbumsFromArtist("CharlyGarcia").then(response => {
     //console.log(response.items.map(item => item.name))});
   // musixmatch.default.getTrackLyric("Despacito Luis Fonsi");
-  // musixmatch.default.getTrackLyric("Bohemiam Rhapsody");
+  
   // musixmatch.default.getTrackLyric("Ciudad Mágica");
-  // musixmatch.default.getTrackLyric("Gracias a la vida");
   // musixmatch.default.getTrackLyric("Rasguña las piedras")
    // musixmatch.default.getTrackLyric("Gracias a la vida")
+   // musixmatch.default.getTrackLyric("Bohemiam Rhapsody")
     //  .then(response => console.log(response.message.body.lyrics.lyrics_body))
     //  .catch(() => console.log("The song has not lyrics."));
 
@@ -71,7 +71,7 @@ async function main() {
   //console.log(unqfy.getArtistById(1))
   //console.log(unqfy.getLyrics("Rasguña las piedras"));
 
-  //console.log(unqfy.getTrackById(3).lyrics);
+ //console.log( unqfy.getTrackById(7).lyrics);
 }
 
 main();
@@ -347,7 +347,7 @@ function execPopulateAlbumsForArtist(unqfy, arguments_) {
 
 function execGetLyrics(unqfy, arguments_) {
   try {
-    console.log(unqfy.getLyrics(arguments_[1])) // consola: node main.js getLyrics trackName
+    unqfy.getLyrics(arguments_[1]) // consola: node main.js getLyrics trackName
   } catch(error) {
     console.log(error.message);
   }

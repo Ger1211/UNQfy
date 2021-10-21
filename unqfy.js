@@ -501,20 +501,13 @@ class UNQfy {
 
    getLyrics(trackName) {
     let track = this.getTrackByName(trackName);
-    if (track != undefined) {
-      if (track.lyrics === "") {
-        track.getLyrics()
-        .then(() => this.save("data.json"))
-      } else {
-        return track.lyrics;
-       }
+    if (track !== undefined) {
+       track.getLyrics()
+       .then(() => this.save("data.json"))
     } else {
-      throw new EntityNameDoesntExist("Track", trackName);
+      throw EntityNameDoesntExist("Track", trackName);
     }
   }
-
-
-
 
 
   createAlbumsFromArtist(artist, response) {
