@@ -71,7 +71,9 @@ async function main() {
   //console.log(unqfy.getArtistById(1))
   //console.log(unqfy.getLyrics("Rasguña las piedras"));
 
- //console.log( unqfy.getTrackById(7).lyrics);
+ //console.log( unqfy.getTrackById(11).lyrics);
+//console.log(unqfy.getLyrics("Bohemiam Rhapsody"));
+
 }
 
 main();

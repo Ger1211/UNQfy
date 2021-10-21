@@ -499,16 +499,6 @@ class UNQfy {
     }
   }
 
-   getLyrics(trackName) {
-    let track = this.getTrackByName(trackName);
-    if (track !== undefined) {
-       track.getLyrics()
-       .then(() => this.save("data.json"))
-    } else {
-      throw EntityNameDoesntExist("Track", trackName);
-    }
-  }
-
 
   createAlbumsFromArtist(artist, response) {
     response.items.forEach((alb) =>
@@ -518,6 +508,26 @@ class UNQfy {
       })
     );
   }
+
+   getLyrics(trackName) {
+    let track = this.getTrackByName(trackName);
+    if (track !== undefined) {
+      if (track.lyrics === "") {
+       return track.getLyrics()
+       .then((lyrics) => {
+         this.save("data.json")
+          lyrics
+       })
+    } else {
+      return track.lyrics;
+     }
+    } else {
+      throw EntityNameDoesntExist("Track", trackName);
+    }
+  }
+
+
+
 
   save(filename) {
     const serializedData = picklify.picklify(this);
