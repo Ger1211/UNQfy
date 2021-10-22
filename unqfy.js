@@ -168,6 +168,7 @@ class UNQfy {
     return nextId;
   }
 
+
   getArtistById(id) {
     return this.artists.find(
       (artist) => artist.id.toString() === id.toString()
@@ -524,6 +525,11 @@ class UNQfy {
     } else {
       throw EntityNameDoesntExist("Track", trackName);
     }
+  }
+
+
+  hola(){
+    return console.log("hola");
   }
 
 
