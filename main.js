@@ -68,11 +68,18 @@ async function main() {
     //  .catch(() => console.log("The song has not lyrics."));
 
   //unqfy.allAlbumsOfArtist(1);
-  console.log(unqfy.getArtistById(3))
+  //console.log(unqfy.getArtistById(4))
+  //unqfy.deleteArtistById(4);
+ console.log(unqfy.getArtistById(6))
+
+ //unqfy.deleteArtistById(6)
+  //saveUNQfy(unqfy);
+
   //console.log(unqfy.getLyrics("Rasguña las piedras"));
 
  //console.log( unqfy.getTrackById(11).lyrics);
 //console.log(unqfy.getLyrics("Bohemiam Rhapsody"));
+
 
 
 }

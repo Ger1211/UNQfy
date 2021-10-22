@@ -68,6 +68,16 @@ class UNQfy {
     return nextId;
   }
 
+
+  modifyArtistById(id,artistData){
+    const artist = this.getArtistById(id)
+    artist.name = artistData.name;
+    artist.country = artistData.country;
+    return artist
+   }
+
+
+
   // albumData: objeto JS con los datos necesarios para crear un album
   //   albumData.name (string)
   //   albumData.year (number)
@@ -161,6 +171,7 @@ class UNQfy {
       albumId
     );
   }
+  
 
   getNextTrackId() {
     let nextId = this.nextTrackId;
@@ -273,6 +284,13 @@ class UNQfy {
     return !this.getAlbumByName(name);
   }
 
+
+
+
+
+
+
+
   deleteArtist(name) {
     if (this.doesntExistArtistByName(name)) {
       throw new EntityNameDoesntExist("Artist", name);
@@ -286,6 +304,22 @@ class UNQfy {
 
   doesntExistArtistByName(name) {
     return !this.getArtistByName(name);
+  }
+
+
+  deleteArtistById(id) {
+    if (this.doesntExistArtistById(id)) {
+      throw new EntityIdDoesntExist("Artist", id);
+    } else {
+      this.artists
+        .flatMap((artist) => artist.albums)
+        .forEach((album) => this.deleteAlbum(album.name));
+      this.artists = this.artists.filter((artist) => artist.id !== id);
+    }
+  }
+
+  doesntExistArtistById(id) {
+    return !this.getArtistById(id);
   }
 
   // name: nombre de la playlist
