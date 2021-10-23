@@ -11,7 +11,7 @@ class Artist {
   }
 
   eraseAlbum(albumName) {
-    this.albums.filter((album) => album.name !== albumName);
+    this.albums.filter((album) => album.name.toLowerCase() !== albumName.toLowerCase());
   }
 }
 

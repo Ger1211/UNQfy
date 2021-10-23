@@ -70,17 +70,21 @@ async function main() {
   //unqfy.allAlbumsOfArtist(1);
   //console.log(unqfy.getArtistById(4))
   //unqfy.deleteArtistById(4);
- console.log(unqfy.getArtistById(6))
+ //console.log(unqfy.getArtistById(1))
 
  //unqfy.deleteArtistById(6)
   //saveUNQfy(unqfy);
 
-  //console.log(unqfy.getLyrics("Rasguña las piedras"));
+  //unqfy.getLyrics("Rasguña las piedras");
+  //console.log(unqfy.getTrackById(1));
 
  //console.log( unqfy.getTrackById(11).lyrics);
 //console.log(unqfy.getLyrics("Bohemiam Rhapsody"));
 
 
+//borrar
+//unqfy.deleteAlbum("albumeliminar");
+//console.log(unqfy.getAlbumById(23))
 
 }
 
@@ -179,7 +183,6 @@ function execAddArtist(unqfy, arguments_) {
       country: arguments_[2],
     }); //consola: node main.js addArtist name country.
     console.log("New Artist: ", artist);
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -192,7 +195,6 @@ function execAddAlbum(unqfy, arguments_) {
       year: arguments_[2],
     }); //consola: node main.js addAlbum name year artistId.
     console.log("New Album: ", album);
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -206,7 +208,6 @@ function execAddTrack(unqfy, arguments_) {
       duration: arguments_[3],
     }); //consola: node main.js addTrack name "genre" duration albumId.
     console.log(track);
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log("error: ", error.message);
   }
@@ -215,7 +216,6 @@ function execAddTrack(unqfy, arguments_) {
 function execDeleteTrack(unqfy, arguments_) {
   try {
     unqfy.deleteTrack(arguments_[1]); //consola: node main.js deleteTrack name.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -224,7 +224,6 @@ function execDeleteTrack(unqfy, arguments_) {
 function execDeleteAlbum(unqfy, arguments_) {
   try {
     unqfy.deleteAlbum(arguments_[1]); //consola: node main.js deleteAlbum name.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -233,7 +232,6 @@ function execDeleteAlbum(unqfy, arguments_) {
 function execDeleteArtist(unqfy, arguments_) {
   try {
     unqfy.deleteArtist(arguments_[1]); //consola: node main.js deleteArtist name.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -242,7 +240,6 @@ function execDeleteArtist(unqfy, arguments_) {
 function execAllArtist(unqfy) {
   try {
     unqfy.allArtists(); //consola: node main.js allArtists.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -251,7 +248,6 @@ function execAllArtist(unqfy) {
 function execAllAlbumsOfArtist(unqfy, arguments_) {
   try {
     unqfy.allAlbumsOfArtist(arguments_[1]); //consola: node main.js allAlbumsOfArtist artistId.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -260,7 +256,6 @@ function execAllAlbumsOfArtist(unqfy, arguments_) {
 function execAllTracksOfAlbum(unqfy, arguments_) {
   try {
     unqfy.allTracksOfAlbum(arguments_[1]); //consola: node main.js allTracksOfAlbum albumId.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -269,7 +264,6 @@ function execAllTracksOfAlbum(unqfy, arguments_) {
 function execAddUser(unqfy, arguments_) {
   try {
     unqfy.addUser({ username: arguments_[1] }); //consola: node main.js addUser username.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -305,7 +299,6 @@ function execThreeMostListen(unqfy, arguments_) {
 function execGetTracksMatchingArtist(unqfy, arguments_) {
   try {
     unqfy.getTracksMatchingArtist(arguments_[1]); //consola: node main.js getTracksMatchingArtist artistName.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -314,7 +307,6 @@ function execGetTracksMatchingArtist(unqfy, arguments_) {
 function execGetTracksMatchingGenres(unqfy, arguments_) {
   try {
     unqfy.getTracksMatchingGenres(arguments_[1].split(",")); //consola: node main.js getTracksMatchingGenres genres.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -323,7 +315,6 @@ function execGetTracksMatchingGenres(unqfy, arguments_) {
 function execCreatePlaylist(unqfy, arguments_) {
   try {
     unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]); //consola: node main.js createPlaylist name genresToInclude maxDuration.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }
@@ -341,7 +332,6 @@ function execAllPlaylist(unqfy) {
 function execSearchByName(unqfy, arguments_) {
   try {
     console.log(unqfy.searchByName(arguments_[1])); //consola: node main.js searchByName name.
-    saveUNQfy(unqfy);
   } catch (error) {
     console.log(error.message);
   }

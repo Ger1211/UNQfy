@@ -46,6 +46,7 @@ class UNQfy {
     } else {
       let artist = this.createArtist(artistData);
       this.artists.push(artist);
+      this.save("data.json");
       return artist;
     }
   }
@@ -99,6 +100,7 @@ class UNQfy {
     } else {
       let album = this.createAlbum(artistId, albumData);
       artist.albums.push(album);
+      this.save("data.json");
       return album;
     }
   }
@@ -128,6 +130,14 @@ class UNQfy {
     return nextId;
   }
 
+
+  modifyAlbumById(albumId,newYear){
+    const album = this.getAlbumById(albumId)
+    album.year = newYear;
+    return album
+  }
+
+
   // trackData: objeto JS con los datos necesarios para crear un track
   //   trackData.name (string)
   //   trackData.duration (number)
@@ -148,6 +158,7 @@ class UNQfy {
     } else {
       let track = this.createTrack(albumId, trackData);
       album.tracks.push(track);
+      this.save("data.json");
       return track;
     }
   }
@@ -259,6 +270,7 @@ class UNQfy {
           playlist.tracks.some((track) => track.name === name)
         )
         .forEach((playlist) => playlist.eraseTrack(name));
+        this.save("data.json");
     }
   }
 
@@ -272,24 +284,18 @@ class UNQfy {
     } else {
       this.artists
         .flatMap((artist) => artist.albums)
-        .find((album) => album.name === name)
+        .find((album) => album.name.toLowerCase() === name.toLowerCase())
         .tracks.forEach((track) => this.deleteTrack(track.name));
       this.artists
-        .find((artist) => artist.albums.some((album) => album.name === name))
+        .find((artist) => artist.albums.some((album) => album.name.toLowerCase() === name.toLowerCase()))
         .eraseAlbum(name);
+        this.save("data.json");
     }
   }
 
   doesntExistAlbumByName(name) {
     return !this.getAlbumByName(name);
   }
-
-
-
-
-
-
-
 
   deleteArtist(name) {
     if (this.doesntExistArtistByName(name)) {
@@ -299,6 +305,7 @@ class UNQfy {
         .flatMap((artist) => artist.albums)
         .forEach((album) => this.deleteAlbum(album.name));
       this.artists = this.artists.filter((artist) => artist.name !== name);
+      this.save("data.json");
     }
   }
 
@@ -306,21 +313,6 @@ class UNQfy {
     return !this.getArtistByName(name);
   }
 
-
-  deleteArtistById(id) {
-    if (this.doesntExistArtistById(id)) {
-      throw new EntityIdDoesntExist("Artist", id);
-    } else {
-      this.artists
-        .flatMap((artist) => artist.albums)
-        .forEach((album) => this.deleteAlbum(album.name));
-      this.artists = this.artists.filter((artist) => artist.id !== id);
-    }
-  }
-
-  doesntExistArtistById(id) {
-    return !this.getArtistById(id);
-  }
 
   // name: nombre de la playlist
   // genresToInclude: array de generos
@@ -337,6 +329,7 @@ class UNQfy {
     let tracks = this.getTracksMatchingGenres(genresToInclude);
     playlist.tracks = this.generateRandomTracks(tracks, maxDuration);
     this.playlists.push(playlist);
+    this.save("data.json");
     return playlist;
   }
 
@@ -381,24 +374,39 @@ class UNQfy {
 
   searchByName(name) {
     let result = {};
-    result.artists = this.artists.filter((artist) =>
-      artist.name.includes(name)
-    );
-    result.albums = this.artists
-      .flatMap((artist) => artist.albums)
-      .filter((album) => album.name.includes(name));
-    result.tracks = this.artists
-      .flatMap((artist) => artist.albums)
-      .flatMap((album) => album.tracks)
-      .filter((track) => track.name.includes(name));
+    result.artists = this.artistMatchWith(name);
+    result.albums = this.albumMatchWith(name);
+    result.tracks = this.trackMatchWith(name);
     result.playlists = this.playlists.filter((playlist) =>
-      playlist.name.includes(name)
+      playlist.name.toLowerCase().includes(name.toLowerCase())
     );
     return result;
   }
 
+  artistMatchWith(artistName){
+    return this.artists.filter(
+                        (artist) => artist.name.toLowerCase().includes(artistName.toLowerCase()));
+  }
+
+  albumMatchWith(albumName){
+    return this.artists
+    .flatMap((artist) => artist.albums)
+    .filter((album) => album.name.toLowerCase().includes(albumName.toLowerCase()));
+  }
+
+  trackMatchWith(trackName){
+    return this.artists
+    .flatMap((artist) => artist.albums)
+    .flatMap((album) => album.tracks)
+    .filter((track) => track.name.toLowerCase().includes(trackName.toLowerCase()));
+  }
+
+
+
+
   addUser(userData) {
     let user = this.createUser(userData);
+    this.save("data.json");
     return this.users.push(user);
   }
 
