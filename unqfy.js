@@ -624,6 +624,13 @@ class UNQfy {
     }
   }
 
+  getAllArtist() {
+    return this.artists;
+  }
+
+  getAllAlbums() {
+    return this.artists.flatMap(artist => artist.albums).filter(album => album != null);
+  }
 
   hola(){
     return console.log("hola");
