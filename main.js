@@ -83,8 +83,16 @@ async function main() {
 
 
 //borrar
-//unqfy.deleteAlbum("albumeliminar");
-//console.log(unqfy.getAlbumById(23))
+//console.log(unqfy.getTracks([1,2,3]));
+//console.log(unqfy.getTrackById(1));
+//console.log(unqfy.getTrackById(2));
+//console.log(unqfy.getTrackById(3));
+//console.log(unqfy.getPlaylistById(6));
+
+//console.log(unqfy.playlists);
+//unqfy.deletePlaylist(3);
+
+//console.log(unqfy.playlistMatchWithNameAndDuration("Exitos",7,9));
 
 }
 
@@ -314,7 +322,8 @@ function execGetTracksMatchingGenres(unqfy, arguments_) {
 
 function execCreatePlaylist(unqfy, arguments_) {
   try {
-    unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]); //consola: node main.js createPlaylist name genresToInclude maxDuration.
+    let playlist = unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]); //consola: node main.js createPlaylist name genresToInclude maxDuration.
+    console.log("New Playlist: ", playlist);
   } catch (error) {
     console.log(error.message);
   }

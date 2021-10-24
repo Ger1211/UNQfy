@@ -18,6 +18,10 @@ class Playlist {
   eraseTrack(name) {
     this.tracks = this.tracks.filter((tr) => tr.name !== name);
   }
+
+  getDuration(){
+    return this.tracks.map(track => track.duration).reduce( (acc, num) =>  num + acc,0);
+  }
 }
 
 module.exports = Playlist;

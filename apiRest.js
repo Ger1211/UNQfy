@@ -16,7 +16,6 @@ let router = express.Router();
 let port = process.env.PORT || 8080;
 app.use(express.json());
 
-//CONSULTAR: DSP DE CADA METODO, APLICAR UNQ.SAVE() ??
 
 router.get('/',function(req,res){
     res.status(200);
@@ -33,7 +32,7 @@ router.get('/',function(req,res){
         res.json({ errorMessage : `There is no Artist with ID ${artistId}`,
                  statusCode: res.statusCode});
 }
-}).post('/artist',function (req, res) {
+}).post('/artists',function (req, res) {
     try{
        const artistData = {name: req.body.name,
                            country:req.body.country};
@@ -65,7 +64,7 @@ router.get('/',function(req,res){
     const artist = unqfy.getArtistById(artistId);
     if (artist !== undefined){
         try{
-            unqfy.deleteArtist(artist.name)
+            unqfy.deleteArtist(artist.name);
             res.status(204);
         } catch (error){
             res.status(404);
@@ -79,13 +78,13 @@ router.get('/',function(req,res){
                  statusCode: res.statusCode});
     }
 
-}).delete('/albums/:albumId',function(req,res){  //NO FUNCIONA, EN REALIDAD EL deleteAlbum es el que no anda.
+}).delete('/albums/:albumId',function(req,res){  
     
     const albumId = req.params.albumId;
     const album = unqfy.getAlbumById(albumId);
     if (album !== undefined){
         try{
-            unqfy.deleteAlbum(album.name)
+            unqfy.deleteAlbum(album.name);
             res.status(204);
         } catch (error){
             res.status(404);
@@ -99,6 +98,19 @@ router.get('/',function(req,res){
                  statusCode: res.statusCode});
     }
 
+}).delete('/playlists/:playlistId',function(req,res){ 
+    
+    const playlistId = req.params.playlistId;
+        try{
+            unqfy.deletePlaylist(playlistId);
+            res.status(204);
+        } catch (error){
+            res.status(404);
+            res.json({ errorMessage : error.message,
+                     statusCode: res.statusCode});
+          }
+    
+
 }).get('/artists',function(req,res){                  
     
     const artistName = req.query.name;
@@ -111,7 +123,7 @@ router.get('/',function(req,res){
         res.json({ errorMessage : `There is no result for the artist with the name ${artistName}`,
                  statusCode: res.statusCode});
 }
-}).get('/albums',function(req,res){            //falta arreglar que nos discrimine entre mayuscula-miniscula          
+}).get('/albums',function(req,res){             
     
     const albumName = req.query.name;
     result = unqfy.albumMatchWith(albumName);
@@ -135,7 +147,7 @@ router.get('/',function(req,res){
         res.json({ errorMessage : `There is no Album with ID ${albumId}`,
                  statusCode: res.statusCode});
 }
-}).post('/album',function (req, res) {
+}).post('/albums',function (req, res) {
     try{
        const albumData = {
                 name: req.body.name,
@@ -162,9 +174,60 @@ router.get('/',function(req,res){
         res.json({ errorMessage : `There is no Album with ID ${albumId}`,
                  statusCode: res.statusCode});
     }
+}).post('/playlists',function (req, res) {  //node main.js createPlaylist name genresToInclude maxDuration.
+    try{
+        const playlistName= req.body.name;
+        const maxDuration= req.body.maxDuration;
+        const genres= req.body.genres;
+
+        newPlaylist = unqfy.createPlaylist(playlistName,genres,maxDuration);  //unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]);
+        res.status(201);      
+        res.json(newPlaylist);
+    } catch (error){
+        res.status(400);
+        res.json({ errorMessage : error.message,
+                 statusCode: res.statusCode});
+    }
+}).post('/playlists2',function (req, res) {  
+    try{
+        const playlistName= req.body.name;
+        const tracks= req.body.tracks;
+
+        newPlaylist = unqfy.createPlaylistWithSetOfTracks(playlistName, tracks);  
+        res.status(201);      
+        res.json(newPlaylist);
+    } catch (error){
+        res.status(404);
+        res.json({ errorMessage : error.message,
+                 statusCode: res.statusCode});
+    }
+}).get('/playlists/:playlistId',function(req,res){                  
+    
+    const playlistId = req.params.playlistId;
+    const playlist = unqfy.getPlaylistById(playlistId);
+    if (playlist !== undefined){
+        res.status(200);
+        res.json(playlist);
+    }else{
+        res.status(404);
+        res.json({ errorMessage : `There is no Playlist with ID ${playlistId}`,
+                 statusCode: res.statusCode});
+}
+}).get('/playlists',function(req,res){             
+    
+    const playlistName = req.query.name;
+    const durationLT = req.query.durationLT;
+    const durationGT =  req.query.durationGT;
+    result = unqfy.playlistMatchWithNameAndDuration(playlistName,durationGT,durationLT);
+    if (result.length !== 0){
+        res.status(200);
+        res.json(result);
+    }else{
+        res.status(404);
+        res.json({ errorMessage : `There is no result for the playlist with the name ${playlistName} and the given duration`,
+                 statusCode: res.statusCode});
+}
 })
-
-
 
 app.use('/api', router);
 app.listen(port,

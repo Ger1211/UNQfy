@@ -242,9 +242,8 @@ class UNQfy {
       .flatMap((artist) => artist.albums)
       .flatMap((album) => album.tracks)
       .filter((track) =>
-        track.genres.some((genre) => genres.some((gen) => gen === genre))
+        track.genres.some((genre) => genres.some((gen) => gen.toLowerCase() === genre.toLowerCase()))
       );
-    console.log(tracks);
     return tracks;
   }
 
@@ -314,6 +313,21 @@ class UNQfy {
   }
 
 
+
+  deletePlaylist(id){
+    let playlist = this.getPlaylistById(id);
+    if (playlist === undefined) {
+      throw new EntityIdDoesntExist("Playlist", id);
+    } else {
+      playlist.tracks.splice(0,playlist.tracks.length);
+      this.playlists = this.playlists.filter((playlist) => playlist.id !== id);
+      this.save("data.json");
+    }
+  }
+
+
+
+
   // name: nombre de la playlist
   // genresToInclude: array de generos
   // maxDuration: duración en segundos
@@ -332,6 +346,37 @@ class UNQfy {
     this.save("data.json");
     return playlist;
   }
+
+
+  createPlaylistWithSetOfTracks(name, tracksToInclude) {
+    let playlist = this.createNewPlaylist(name);
+    let tracks = this.getTracks(tracksToInclude); //devuelve una lista de tracks
+    playlist.tracks = tracks;
+    this.playlists.push(playlist);
+    this.save("data.json");
+    return playlist;
+  }
+
+  getTracks(trackIDs){
+    let tracks= [];
+    for(let i=0; i < trackIDs.length; i++){
+      let track = this.getTrackById(trackIDs[i]);
+      if (track !== undefined){
+        tracks.push(track);
+      }else{
+        throw new EntityIdDoesntExist("Track", trackIDs[i]);
+      }
+    } 
+    return tracks;
+  }
+
+
+
+
+
+
+
+
 
   allPlaylist() {
     return console.log(
@@ -377,9 +422,7 @@ class UNQfy {
     result.artists = this.artistMatchWith(name);
     result.albums = this.albumMatchWith(name);
     result.tracks = this.trackMatchWith(name);
-    result.playlists = this.playlists.filter((playlist) =>
-      playlist.name.toLowerCase().includes(name.toLowerCase())
-    );
+    result.playlists = this.playlistMatchWith(name);
     return result;
   }
 
@@ -399,6 +442,18 @@ class UNQfy {
     .flatMap((artist) => artist.albums)
     .flatMap((album) => album.tracks)
     .filter((track) => track.name.toLowerCase().includes(trackName.toLowerCase()));
+  }
+
+  playlistMatchWith(playlistName){
+    return this.playlists.filter((playlist) =>
+      playlist.name.toLowerCase().includes(playlistName.toLowerCase())
+      );
+  }
+
+  playlistMatchWithNameAndDuration(playlistName,min,max){
+    return this.playlists.filter((playlist) => playlist.name.toLowerCase().includes(playlistName.toLowerCase()) 
+                                  && playlist.getDuration() >= min 
+                                  && playlist.getDuration() <= max );
   }
 
 
