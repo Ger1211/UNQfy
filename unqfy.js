@@ -281,13 +281,11 @@ class UNQfy {
     if (this.doesntExistAlbumByName(name)) {
       throw new EntityNameDoesntExist("Album", name);
     } else {
-      this.artists
-        .flatMap((artist) => artist.albums)
-        .find((album) => album.name.toLowerCase() === name.toLowerCase())
-        .tracks.forEach((track) => this.deleteTrack(track.name));
-      this.artists
-        .find((artist) => artist.albums.some((album) => album.name.toLowerCase() === name.toLowerCase()))
-        .eraseAlbum(name);
+        let albumToDelete = this.getAlbumByName(name);
+        let artistOwnerAlbum = this.getArtistById(albumToDelete.getArtistId());
+        const indexToDelete = artistOwnerAlbum.albums.findIndex(album => album.id === albumToDelete.id);
+        albumToDelete.tracks.forEach(track => this.deleteTrack(track.name))
+        artistOwnerAlbum.albums.splice(indexToDelete, 1);
         this.save("data.json");
     }
   }
@@ -300,10 +298,10 @@ class UNQfy {
     if (this.doesntExistArtistByName(name)) {
       throw new EntityNameDoesntExist("Artist", name);
     } else {
-      this.artists
-        .flatMap((artist) => artist.albums)
-        .forEach((album) => this.deleteAlbum(album.name));
-      this.artists = this.artists.filter((artist) => artist.name !== name);
+      let artistToDelete = this.getArtistByName(name);
+      const indexToDelete = this.artists.findIndex(artist => artist.id === artistToDelete.id);
+      artistToDelete.deleteAllAlbums();
+      this.artists.splice(indexToDelete, 1);
       this.save("data.json");
     }
   }

@@ -13,6 +13,10 @@ class Artist {
   eraseAlbum(albumName) {
     this.albums.filter((album) => album.name.toLowerCase() !== albumName.toLowerCase());
   }
+
+  deleteAllAlbums() {
+    this.albums = [];
+  }
 }
 
 module.exports = Artist;

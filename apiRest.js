@@ -114,6 +114,7 @@ router
       try {
         unqfy.deleteAlbum(album.name);
         res.status(204);
+        res.json(album);
       } catch (error) {
         res.status(404);
         res.json({ errorMessage: error.message, statusCode: res.statusCode });

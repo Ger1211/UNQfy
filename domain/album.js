@@ -14,6 +14,10 @@ class Album {
   deleteAllTracks() {
     this.tracks = [];
   }
+
+  getArtistId() {
+    return this.artistId;
+  }
 }
 
 module.exports = Album;
