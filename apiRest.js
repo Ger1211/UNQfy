@@ -9,7 +9,6 @@ function getUNQfy(filename = "data.json") {
   return unqfy;
 }
 
-let unqfy = getUNQfy();
 let express = require("express");
 let app = express();
 let router = express.Router();
@@ -265,17 +264,21 @@ router
       });
     }
   })
-  .get("/tracks/:trackId/lyrics", function (req, res) {
+  .get("/tracks/:trackId/lyrics", async function (req, res) {
     const trackId = req.params.trackId;
     const track = unqfy.getTrackById(trackId);
     if (track !== undefined) {
-      const lyric = unqfy.getLyrics(track.name);
-      let result = {
+      let lyric = await unqfy.getLyrics(track.name).then(lyric =>
+        {
+        const result = {
         name: track.name,
-        lyrics: lyric
-      }
+        lyrics: lyric}
+        
+      return result
+    })
       res.status(200);
-      res.json(result);
+      res.json(lyric);
+       
     } else {
       res.status(404);
       res.json({

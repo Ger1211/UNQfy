@@ -612,15 +612,18 @@ class UNQfy {
        return track.getLyrics()
        .then((lyrics) => {
          this.save("data.json")
-          lyrics
+          return lyrics
        })
     } else {
-      return track.lyrics;
+      return  Promise.resolve(track.lyrics);
      }
     } else {
       throw EntityNameDoesntExist("Track", trackName);
     }
   }
+
+
+
 
   getAllArtist() {
     return this.artists;
