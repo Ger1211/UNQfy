@@ -54,10 +54,10 @@ async function main() {
   let invocation = arguments_[0];
 
   execFunction(invocation, unqfy, arguments_);
-  //  saveUNQfy(unqfy);
+  
 
-   //spotify.default.getAllAlbumsFromArtist("CharlyGarcia").then(response => {
-    //console.log(response.items.map(item => item.name))});
+   //spotify.default.getAllAlbumsFromArtist("Guns And Roses").then(response => {
+   // console.log(response.items.map(item => item.name))});
   // musixmatch.default.getTrackLyric("Despacito Luis Fonsi");
   
   // musixmatch.default.getTrackLyric("Ciudad Mágica");
@@ -67,7 +67,7 @@ async function main() {
     //  .then(response => console.log(response.message.body.lyrics.lyrics_body))
     //  .catch(() => console.log("The song has not lyrics."));
 
-  //unqfy.allAlbumsOfArtist(1);
+  //unqfy.allAlbumsOfArtist(5);
   //console.log(unqfy.getArtistById(4))
   //unqfy.deleteArtistById(4);
  //console.log(unqfy.getArtistById(1))

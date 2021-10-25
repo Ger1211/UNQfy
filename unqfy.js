@@ -89,14 +89,11 @@ class UNQfy {
      - una propiedad name (string)
      - una propiedad year (number)
   */
-
-    //VERIFICAR QUE EL ARTISTA NO TENGA ESE MISMO NOMBRE DE ALBUM EN SU LISTA DE ALBUMS.
-
     let artist = this.getArtistById(artistId);
     if (this.doesntExistArtist(artist)) {
       throw new EntityIdDoesntExist("Artist", artistId);
     } else if (this.albumDuplicatedOnArtist(artist, albumData)) {
-      throw new InvalidArtist(artist.getId());
+        throw new InvalidArtist(artist.getId());
     } else {
       let album = this.createAlbum(artistId, albumData);
       artist.albums.push(album);
@@ -598,12 +595,24 @@ class UNQfy {
 
   createAlbumsFromArtist(artist, response) {
     response.items.forEach((alb) =>
-      this.addAlbum(artist.getId().toString(), {
+      this.addAlbumBySpotify(artist.getId().toString(), {
         name: alb.name,
         year: alb.release_date,
       })
     );
   }
+
+  addAlbumBySpotify(artistId, albumData) {
+    let artist = this.getArtistById(artistId);
+    // if (this.albumDuplicatedOnArtist(artist, albumData)) { //Consultar Profe
+     // throw new InvalidArtist(artist.getId());}
+      let album = this.createAlbum(artistId, albumData);
+      artist.albums.push(album);
+      return album;
+  }
+
+
+
 
    getLyrics(trackName) {
     let track = this.getTrackByName(trackName);
