@@ -218,7 +218,7 @@ router
       res.json({ errorMessage: error.message, statusCode: res.statusCode });
     }
   })
-  .post("/playlists2", function (req, res) {
+  .post("/playlists2", function (req, res) {   //Tuve que poner el playlists2 ya que los endpoint's de arriba y este son iguales, solo cambia el body y no se como diferenciarlos.
     try {
       const playlistName = req.body.name;
       const tracks = req.body.tracks;
@@ -264,7 +264,26 @@ router
         statusCode: res.statusCode,
       });
     }
-  });
+  })
+  .get("/tracks/:trackId/lyrics", function (req, res) {
+    const trackId = req.params.trackId;
+    const track = unqfy.getTrackById(trackId);
+    if (track !== undefined) {
+      const lyric = unqfy.getLyrics(track.name);
+      let result = {
+        name: track.name,
+        lyrics: lyric
+      }
+      res.status(200);
+      res.json(result);
+    } else {
+      res.status(404);
+      res.json({
+        errorMessage: `There is no Track with ID ${trackId}`,
+        statusCode: res.statusCode,
+      });
+    }
+  })
 
 app.use("/api", router);
 app.listen(port, () => console.log(`Port ${port} listening`));
