@@ -313,12 +313,12 @@ class UNQfy {
 
 
   deletePlaylist(id){
-    let playlist = this.getPlaylistById(id);
-    if (playlist === undefined) {
+    let playlistToDelete = this.getPlaylistById(id);
+    if (playlistToDelete === undefined) {
       throw new EntityIdDoesntExist("Playlist", id);
     } else {
-      playlist.tracks.splice(0,playlist.tracks.length);
-      this.playlists = this.playlists.filter((playlist) => playlist.id !== id);
+      const indexToDelete = this.playlists.findIndex(playlist => playlist.id === playlistToDelete.id);
+      this.playlists.splice(indexToDelete,1);
       this.save("data.json");
     }
   }

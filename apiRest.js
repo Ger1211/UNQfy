@@ -24,7 +24,7 @@ router
     //router.route('/artists/:artistId').get(function (req, res){
 
     const artistId = req.params.artistId;
-    const artista = unqfy.getArtistById(artistId);
+    const artista = getUNQfy().getArtistById(artistId);
     if (artista !== undefined) {
       res.status(200);
       res.json(artista);
@@ -40,7 +40,7 @@ router
     const artistName = req.query.name;
     let result;
     if (artistName != undefined) {
-      result = unqfy.artistMatchWith(artistName);
+      result = getUNQfy().artistMatchWith(artistName);
       if (result.length !== 0) {
         res.status(200);
         res.json(result);
@@ -52,7 +52,7 @@ router
         });
       }
     } else {
-      result = unqfy.getAllArtist();
+      result = getUNQfy().getAllArtist();
       res.status(200);
       res.json(result);
     }
@@ -60,7 +60,7 @@ router
   .post("/artists", function (req, res) {
     try {
       const artistData = { name: req.body.name, country: req.body.country };
-      newArtist = unqfy.addArtist(artistData);
+      newArtist = getUNQfy().addArtist(artistData);
       res.status(201);
       res.json(newArtist);
     } catch (error) {
@@ -70,10 +70,10 @@ router
   })
   .put("/artists/:artistId", function (req, res) {
     const artistId = req.params.artistId;
-    const artista = unqfy.getArtistById(artistId);
+    const artista = getUNQfy().getArtistById(artistId);
     if (artista !== undefined) {
       const newArtistData = { name: req.body.name, country: req.body.country };
-      const modifiedArtist = unqfy.modifyArtistById(artistId, newArtistData);
+      const modifiedArtist = getUNQfy().modifyArtistById(artistId, newArtistData);
       res.status(200);
       res.json(modifiedArtist);
     } else {
@@ -88,12 +88,11 @@ router
     //Metodo Delete no devuelve respuesta cuando es exitoso.
 
     const artistId = req.params.artistId;
-    const artist = unqfy.getArtistById(artistId);
+    const artist = getUNQfy().getArtistById(artistId);
     if (artist !== undefined) {
       try {
-        unqfy.deleteArtist(artist.name);
-        res.status(204);
-        res.json(artist);
+        getUNQfy().deleteArtist(artist.name);
+        res.status(204).send();
       } catch (error) {
         res.status(404);
         res.json({ errorMessage: error.message, statusCode: res.statusCode });
@@ -108,12 +107,11 @@ router
   })
   .delete("/albums/:albumId", function (req, res) {
     const albumId = req.params.albumId;
-    const album = unqfy.getAlbumById(albumId);
+    const album = getUNQfy().getAlbumById(albumId);
     if (album !== undefined) {
       try {
-        unqfy.deleteAlbum(album.name);
-        res.status(204);
-        res.json(album);
+        getUNQfy().deleteAlbum(album.name);
+        res.status(204).send();
       } catch (error) {
         res.status(404);
         res.json({ errorMessage: error.message, statusCode: res.statusCode });
@@ -129,8 +127,8 @@ router
   .delete("/playlists/:playlistId", function (req, res) {
     const playlistId = req.params.playlistId;
     try {
-      unqfy.deletePlaylist(playlistId);
-      res.status(204);
+      getUNQfy().deletePlaylist(playlistId);
+      res.status(204).send();
     } catch (error) {
       res.status(404);
       res.json({ errorMessage: error.message, statusCode: res.statusCode });
@@ -140,7 +138,7 @@ router
     const albumName = req.query.name;
     let result;
     if (albumName != undefined) {
-      result = unqfy.albumMatchWith(albumName);
+      result = getUNQfy().albumMatchWith(albumName);
       if (result.length !== 0) {
         res.status(200);
         res.json(result);
@@ -152,14 +150,14 @@ router
         });
       }
     } else {
-      result = unqfy.getAllAlbums();
+      result = getUNQfy().getAllAlbums();
       res.status(200);
       res.json(result);
     }
   })
   .get("/albums/:albumId", function (req, res) {
     const albumId = req.params.albumId;
-    const album = unqfy.getAlbumById(albumId);
+    const album = getUNQfy().getAlbumById(albumId);
     if (album !== undefined) {
       res.status(200);
       res.json(album);
@@ -178,7 +176,7 @@ router
         year: req.body.year,
       };
       const artistId = req.body.artistId;
-      newAlbum = unqfy.addAlbum(artistId, albumData);
+      newAlbum = getUNQfy().addAlbum(artistId, albumData);
       res.status(201);
       res.json(newAlbum);
     } catch (error) {
@@ -188,10 +186,10 @@ router
   })
   .patch("/albums/:albumId", function (req, res) {
     const albumId = req.params.albumId;
-    const album = unqfy.getAlbumById(albumId);
+    const album = getUNQfy().getAlbumById(albumId);
     if (album !== undefined) {
       const newYear = req.body.year;
-      const modifiedAlbum = unqfy.modifyAlbumById(albumId, newYear);
+      const modifiedAlbum = getUNQfy().modifyAlbumById(albumId, newYear);
       res.status(200);
       res.json(modifiedAlbum);
     } else {
@@ -209,7 +207,7 @@ router
       const maxDuration = req.body.maxDuration;
       const genres = req.body.genres;
 
-      newPlaylist = unqfy.createPlaylist(playlistName, genres, maxDuration); //unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]);
+      newPlaylist = getUNQfy().createPlaylist(playlistName, genres, maxDuration); //unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]);
       res.status(201);
       res.json(newPlaylist);
     } catch (error) {
@@ -222,7 +220,7 @@ router
       const playlistName = req.body.name;
       const tracks = req.body.tracks;
 
-      newPlaylist = unqfy.createPlaylistWithSetOfTracks(playlistName, tracks);
+      newPlaylist = getUNQfy().createPlaylistWithSetOfTracks(playlistName, tracks);
       res.status(201);
       res.json(newPlaylist);
     } catch (error) {
@@ -232,7 +230,7 @@ router
   })
   .get("/playlists/:playlistId", function (req, res) {
     const playlistId = req.params.playlistId;
-    const playlist = unqfy.getPlaylistById(playlistId);
+    const playlist = getUNQfy().getPlaylistById(playlistId);
     if (playlist !== undefined) {
       res.status(200);
       res.json(playlist);
@@ -248,7 +246,7 @@ router
     const playlistName = req.query.name;
     const durationLT = req.query.durationLT;
     const durationGT = req.query.durationGT;
-    result = unqfy.playlistMatchWithNameAndDuration(
+    result = getUNQfy().playlistMatchWithNameAndDuration(
       playlistName,
       durationGT,
       durationLT
@@ -266,9 +264,9 @@ router
   })
   .get("/tracks/:trackId/lyrics", async function (req, res) {
     const trackId = req.params.trackId;
-    const track = unqfy.getTrackById(trackId);
+    const track = getUNQfy().getTrackById(trackId);
     if (track !== undefined) {
-      let lyric = await unqfy.getLyrics(track.name).then(lyric =>
+      let lyric = await getUNQfy().getLyrics(track.name).then(lyric =>
         {
         const result = {
         name: track.name,
