@@ -30,10 +30,7 @@ router
       res.json(artista);
     } else {
       res.status(404);
-      res.json({
-        errorMessage: `There is no Artist with ID ${artistId}`,
-        statusCode: res.statusCode,
-      });
+      res.json({ status: 404, errorCode: "RESOURCE_NOT_FOUND" });
     }
   })
   .get("/artists", function (req, res) {
@@ -45,11 +42,8 @@ router
         res.status(200);
         res.json(result);
       } else {
-        res.status(404);
-        res.json({
-          errorMessage: `There is no result for the artist with the name ${artistName}`,
-          statusCode: res.statusCode,
-        });
+        res.status(200);
+        res.json([]);
       }
     } else {
       result = getUNQfy().getAllArtist();
@@ -59,7 +53,7 @@ router
   })
   .post("/artists", function (req, res) {
     try {
-      if(req.body.name && req.body.country) {
+      if (req.body.name && req.body.country) {
         const artistData = req.body;
         newArtist = getUNQfy().addArtist(artistData);
         res.status(201);
@@ -68,8 +62,11 @@ router
         throw Error("BAD_REQUEST");
       }
     } catch (error) {
-      res.status(409);
-      res.json({ errorMessage: error.message, statusCode: res.statusCode });
+      res.status(400);
+      res.json({
+        status: 400,
+        errorCode: "BAD_REQUEST",
+      });
     }
   })
   .put("/artists/:artistId", function (req, res) {
@@ -77,7 +74,10 @@ router
     const artista = getUNQfy().getArtistById(artistId);
     if (artista !== undefined) {
       const newArtistData = { name: req.body.name, country: req.body.country };
-      const modifiedArtist = getUNQfy().modifyArtistById(artistId, newArtistData);
+      const modifiedArtist = getUNQfy().modifyArtistById(
+        artistId,
+        newArtistData
+      );
       res.status(200);
       res.json(modifiedArtist);
     } else {
@@ -103,10 +103,7 @@ router
       }
     } else {
       res.status(404);
-      res.json({
-        errorMessage: `There is no Artist with ID ${artistId}`,
-        statusCode: res.statusCode,
-      });
+      res.json({ status: 404, errorCode: "RESOURCE_NOT_FOUND" });
     }
   })
   .delete("/albums/:albumId", function (req, res) {
@@ -122,10 +119,7 @@ router
       }
     } else {
       res.status(404);
-      res.json({
-        errorMessage: `There is no Album with ID ${albumId}`,
-        statusCode: res.statusCode,
-      });
+      res.json({ status: 404, errorCode: "RESOURCE_NOT_FOUND" });
     }
   })
   .delete("/playlists/:playlistId", function (req, res) {
@@ -147,11 +141,8 @@ router
         res.status(200);
         res.json(result);
       } else {
-        res.status(404);
-        res.json({
-          errorMessage: `There is no result for the album with the name ${albumName}`,
-          statusCode: res.statusCode,
-        });
+        res.status(200);
+        res.json([]);
       }
     } else {
       result = getUNQfy().getAllAlbums();
@@ -167,10 +158,7 @@ router
       res.json(album);
     } else {
       res.status(404);
-      res.json({
-        errorMessage: `There is no Album with ID ${albumId}`,
-        statusCode: res.statusCode,
-      });
+      res.json({ status: 404, errorCode: "RESOURCE_NOT_FOUND" });
     }
   })
   .post("/albums", function (req, res) {
@@ -180,7 +168,15 @@ router
         year: req.body.year,
       };
       const artistId = req.body.artistId;
-      if(albumData.name && albumData.year && artistId) {
+      const artist = getUNQfy().getArtistById(artistId);
+      if (artist === undefined) {
+        res.status(404);
+        res.json({
+          status: 404,
+          errorCode: "RELATED_RESOURCE_NOT_FOUND",
+        });
+      }
+      if (albumData.name && albumData.year && artistId) {
         newAlbum = getUNQfy().addAlbum(artistId, albumData);
         res.status(201);
         res.json(newAlbum);
@@ -188,8 +184,11 @@ router
         throw Error("BAD_REQUEST");
       }
     } catch (error) {
-      res.status(409);
-      res.json({ errorMessage: error.message, statusCode: res.statusCode });
+      res.status(400);
+      res.json({
+        status: 400,
+        errorCode: "BAD_REQUEST",
+      });
     }
   })
   .patch("/albums/:albumId", function (req, res) {
@@ -215,7 +214,11 @@ router
       const maxDuration = req.body.maxDuration;
       const genres = req.body.genres;
 
-      newPlaylist = getUNQfy().createPlaylist(playlistName, genres, maxDuration); //unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]);
+      newPlaylist = getUNQfy().createPlaylist(
+        playlistName,
+        genres,
+        maxDuration
+      ); //unqfy.createPlaylist(arguments_[1], arguments_[2].split(","),arguments_[3]);
       res.status(201);
       res.json(newPlaylist);
     } catch (error) {
@@ -223,12 +226,16 @@ router
       res.json({ errorMessage: error.message, statusCode: res.statusCode });
     }
   })
-  .post("/playlists2", function (req, res) {   //Tuve que poner el playlists2 ya que los endpoint's de arriba y este son iguales, solo cambia el body y no se como diferenciarlos.
+  .post("/playlists2", function (req, res) {
+    //Tuve que poner el playlists2 ya que los endpoint's de arriba y este son iguales, solo cambia el body y no se como diferenciarlos.
     try {
       const playlistName = req.body.name;
       const tracks = req.body.tracks;
 
-      newPlaylist = getUNQfy().createPlaylistWithSetOfTracks(playlistName, tracks);
+      newPlaylist = getUNQfy().createPlaylistWithSetOfTracks(
+        playlistName,
+        tracks
+      );
       res.status(201);
       res.json(newPlaylist);
     } catch (error) {
@@ -274,17 +281,18 @@ router
     const trackId = req.params.trackId;
     const track = getUNQfy().getTrackById(trackId);
     if (track !== undefined) {
-      let lyric = await getUNQfy().getLyrics(track.name).then(lyric =>
-        {
-        const result = {
-        name: track.name,
-        lyrics: lyric}
-        
-      return result
-    })
+      let lyric = await getUNQfy()
+        .getLyrics(track.name)
+        .then((lyric) => {
+          const result = {
+            name: track.name,
+            lyrics: lyric,
+          };
+
+          return result;
+        });
       res.status(200);
       res.json(lyric);
-       
     } else {
       res.status(404);
       res.json({
@@ -292,13 +300,21 @@ router
         statusCode: res.statusCode,
       });
     }
-  })
+  });
 
 app.use((err, req, res, next) => {
-    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-        return res.status(400).send({ status: 404, message: "BAD_REQUEST" });
-    }
-    next();
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res.status(400).send({ status: 400, errorCode: "BAD_REQUEST" });
+  }
+  next();
 });
 app.use("/api", router);
+app.use(function (req, res) {
+  // Invalid request
+  res.status(404);
+  res.json({
+    status: 404,
+    errorCode: "RESOURCE_NOT_FOUND",
+  });
+});
 app.listen(port, () => console.log(`Port ${port} listening`));

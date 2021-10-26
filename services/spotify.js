@@ -29,5 +29,5 @@ const spotify = (() => {
   };
 })();
 
-exports.default = spotify;
+module.exports = spotify;
 
