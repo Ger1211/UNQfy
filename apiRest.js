@@ -59,10 +59,14 @@ router
   })
   .post("/artists", function (req, res) {
     try {
-      const artistData = { name: req.body.name, country: req.body.country };
-      newArtist = getUNQfy().addArtist(artistData);
-      res.status(201);
-      res.json(newArtist);
+      if(req.body.name && req.body.country) {
+        const artistData = req.body;
+        newArtist = getUNQfy().addArtist(artistData);
+        res.status(201);
+        res.json(newArtist);
+      } else {
+        throw Error("BAD_REQUEST");
+      }
     } catch (error) {
       res.status(409);
       res.json({ errorMessage: error.message, statusCode: res.statusCode });
@@ -176,9 +180,13 @@ router
         year: req.body.year,
       };
       const artistId = req.body.artistId;
-      newAlbum = getUNQfy().addAlbum(artistId, albumData);
-      res.status(201);
-      res.json(newAlbum);
+      if(albumData.name && albumData.year && artistId) {
+        newAlbum = getUNQfy().addAlbum(artistId, albumData);
+        res.status(201);
+        res.json(newAlbum);
+      } else {
+        throw Error("BAD_REQUEST");
+      }
     } catch (error) {
       res.status(409);
       res.json({ errorMessage: error.message, statusCode: res.statusCode });
@@ -286,5 +294,11 @@ router
     }
   })
 
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        return res.status(400).send({ status: 404, message: "BAD_REQUEST" });
+    }
+    next();
+});
 app.use("/api", router);
 app.listen(port, () => console.log(`Port ${port} listening`));
