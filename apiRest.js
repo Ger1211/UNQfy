@@ -27,6 +27,7 @@ router
     const artista = getUNQfy().getArtistById(artistId);
     if (artista !== undefined) {
       res.status(200);
+      artista.albums.forEach((album) => delete album.artistId);
       res.json(artista);
     } else {
       res.status(404);
@@ -55,9 +56,18 @@ router
     try {
       if (req.body.name && req.body.country) {
         const artistData = req.body;
-        newArtist = getUNQfy().addArtist(artistData);
-        res.status(201);
-        res.json(newArtist);
+        let artist = getUNQfy().getArtistByName(artistData.name);
+        if (!artist) {
+          let newArtist = getUNQfy().addArtist(artistData);
+          res.status(201);
+          res.json(newArtist);
+        } else {
+          res.status(409);
+          res.json({
+            status: 409,
+            errorCode: "RESOURCE_ALREADY_EXISTS",
+          });
+        }
       } else {
         throw Error("BAD_REQUEST");
       }
@@ -155,6 +165,7 @@ router
     const album = getUNQfy().getAlbumById(albumId);
     if (album !== undefined) {
       res.status(200);
+      delete album.artistId;
       res.json(album);
     } else {
       res.status(404);
@@ -163,23 +174,34 @@ router
   })
   .post("/albums", function (req, res) {
     try {
-      const albumData = {
-        name: req.body.name,
-        year: req.body.year,
-      };
-      const artistId = req.body.artistId;
-      const artist = getUNQfy().getArtistById(artistId);
-      if (artist === undefined) {
-        res.status(404);
-        res.json({
-          status: 404,
-          errorCode: "RELATED_RESOURCE_NOT_FOUND",
-        });
-      }
-      if (albumData.name && albumData.year && artistId) {
-        newAlbum = getUNQfy().addAlbum(artistId, albumData);
-        res.status(201);
-        res.json(newAlbum);
+      if (req.body.name && req.body.year && req.body.artistId) {
+        const albumData = {
+          name: req.body.name,
+          year: req.body.year,
+        };
+        let album = getUNQfy().getAlbumByName(albumData.name);
+        if (!album) {
+          const artistId = req.body.artistId;
+          const artist = getUNQfy().getArtistById(artistId);
+          if (artist === undefined) {
+            res.status(404);
+            res.json({
+              status: 404,
+              errorCode: "RELATED_RESOURCE_NOT_FOUND",
+            });
+          }
+          if (albumData.name && albumData.year && artistId) {
+            newAlbum = getUNQfy().addAlbum(artistId, albumData);
+            res.status(201);
+            res.json(newAlbum);
+          }
+        } else {
+          res.status(409);
+          res.json({
+            status: 409,
+            errorCode: "RESOURCE_ALREADY_EXISTS",
+          });
+        }
       } else {
         throw Error("BAD_REQUEST");
       }

@@ -9,7 +9,6 @@ const Listened = require("./domain/listened");
 const spotify = require("./services/spotify");
 const musixmatch = require("./services/musixmatch");
 
-
 const {
   EntityIdDoesntExist,
   EntityNameDoesntExist,
@@ -69,15 +68,13 @@ class UNQfy {
     return nextId;
   }
 
-
-  modifyArtistById(id,artistData){
-    const artist = this.getArtistById(id)
+  modifyArtistById(id, artistData) {
+    const artist = this.getArtistById(id);
     artist.name = artistData.name;
     artist.country = artistData.country;
-    return artist
-   }
-
-
+    this.save("data.json");
+    return artist;
+  }
 
   // albumData: objeto JS con los datos necesarios para crear un album
   //   albumData.name (string)
@@ -93,11 +90,12 @@ class UNQfy {
     if (this.doesntExistArtist(artist)) {
       throw new EntityIdDoesntExist("Artist", artistId);
     } else if (this.albumDuplicatedOnArtist(artist, albumData)) {
-        throw new InvalidArtist(artist.getId());
+      throw new InvalidArtist(artist.getId());
     } else {
       let album = this.createAlbum(artistId, albumData);
       artist.albums.push(album);
       this.save("data.json");
+      delete album.artistId;
       return album;
     }
   }
@@ -127,13 +125,13 @@ class UNQfy {
     return nextId;
   }
 
-
-  modifyAlbumById(albumId,newYear){
-    const album = this.getAlbumById(albumId)
+  modifyAlbumById(albumId, newYear) {
+    const album = this.getAlbumById(albumId);
     album.year = newYear;
-    return album
+    this.save("data.json");
+    delete album.artistId;
+    return album;
   }
-
 
   // trackData: objeto JS con los datos necesarios para crear un track
   //   trackData.name (string)
@@ -179,14 +177,12 @@ class UNQfy {
       albumId
     );
   }
-  
 
   getNextTrackId() {
     let nextId = this.nextTrackId;
     this.nextTrackId++;
     return nextId;
   }
-
 
   getArtistById(id) {
     return this.artists.find(
@@ -239,7 +235,9 @@ class UNQfy {
       .flatMap((artist) => artist.albums)
       .flatMap((album) => album.tracks)
       .filter((track) =>
-        track.genres.some((genre) => genres.some((gen) => gen.toLowerCase() === genre.toLowerCase()))
+        track.genres.some((genre) =>
+          genres.some((gen) => gen.toLowerCase() === genre.toLowerCase())
+        )
       );
     return tracks;
   }
@@ -266,7 +264,7 @@ class UNQfy {
           playlist.tracks.some((track) => track.name === name)
         )
         .forEach((playlist) => playlist.eraseTrack(name));
-        this.save("data.json");
+      this.save("data.json");
     }
   }
 
@@ -278,12 +276,14 @@ class UNQfy {
     if (this.doesntExistAlbumByName(name)) {
       throw new EntityNameDoesntExist("Album", name);
     } else {
-        let albumToDelete = this.getAlbumByName(name);
-        let artistOwnerAlbum = this.getArtistById(albumToDelete.getArtistId());
-        const indexToDelete = artistOwnerAlbum.albums.findIndex(album => album.id === albumToDelete.id);
-        albumToDelete.tracks.forEach(track => this.deleteTrack(track.name))
-        artistOwnerAlbum.albums.splice(indexToDelete, 1);
-        this.save("data.json");
+      let albumToDelete = this.getAlbumByName(name);
+      let artistOwnerAlbum = this.getArtistById(albumToDelete.getArtistId());
+      const indexToDelete = artistOwnerAlbum.albums.findIndex(
+        (album) => album.id === albumToDelete.id
+      );
+      albumToDelete.tracks.forEach((track) => this.deleteTrack(track.name));
+      artistOwnerAlbum.albums.splice(indexToDelete, 1);
+      this.save("data.json");
     }
   }
 
@@ -296,7 +296,9 @@ class UNQfy {
       throw new EntityNameDoesntExist("Artist", name);
     } else {
       let artistToDelete = this.getArtistByName(name);
-      const indexToDelete = this.artists.findIndex(artist => artist.id === artistToDelete.id);
+      const indexToDelete = this.artists.findIndex(
+        (artist) => artist.id === artistToDelete.id
+      );
       artistToDelete.deleteAllAlbums();
       this.artists.splice(indexToDelete, 1);
       this.save("data.json");
@@ -307,21 +309,18 @@ class UNQfy {
     return !this.getArtistByName(name);
   }
 
-
-
-  deletePlaylist(id){
+  deletePlaylist(id) {
     let playlistToDelete = this.getPlaylistById(id);
     if (playlistToDelete === undefined) {
       throw new EntityIdDoesntExist("Playlist", id);
     } else {
-      const indexToDelete = this.playlists.findIndex(playlist => playlist.id === playlistToDelete.id);
-      this.playlists.splice(indexToDelete,1);
+      const indexToDelete = this.playlists.findIndex(
+        (playlist) => playlist.id === playlistToDelete.id
+      );
+      this.playlists.splice(indexToDelete, 1);
       this.save("data.json");
     }
   }
-
-
-
 
   // name: nombre de la playlist
   // genresToInclude: array de generos
@@ -342,7 +341,6 @@ class UNQfy {
     return playlist;
   }
 
-
   createPlaylistWithSetOfTracks(name, tracksToInclude) {
     let playlist = this.createNewPlaylist(name);
     let tracks = this.getTracks(tracksToInclude); //devuelve una lista de tracks
@@ -352,26 +350,18 @@ class UNQfy {
     return playlist;
   }
 
-  getTracks(trackIDs){
-    let tracks= [];
-    for(let i=0; i < trackIDs.length; i++){
+  getTracks(trackIDs) {
+    let tracks = [];
+    for (let i = 0; i < trackIDs.length; i++) {
       let track = this.getTrackById(trackIDs[i]);
-      if (track !== undefined){
+      if (track !== undefined) {
         tracks.push(track);
-      }else{
+      } else {
         throw new EntityIdDoesntExist("Track", trackIDs[i]);
       }
-    } 
+    }
     return tracks;
   }
-
-
-
-
-
-
-
-
 
   allPlaylist() {
     return console.log(
@@ -421,38 +411,45 @@ class UNQfy {
     return result;
   }
 
-  artistMatchWith(artistName){
-    return this.artists.filter(
-                        (artist) => artist.name.toLowerCase().includes(artistName.toLowerCase()));
+  artistMatchWith(artistName) {
+    return this.artists.filter((artist) =>
+      artist.name.toLowerCase().includes(artistName.toLowerCase())
+    );
   }
 
-  albumMatchWith(albumName){
+  albumMatchWith(albumName) {
+    let albums = this.artists
+      .flatMap((artist) => artist.albums)
+      .filter((album) =>
+        album.name.toLowerCase().includes(albumName.toLowerCase())
+      );
+    albums.forEach((album) => delete album.artistId);
+    return albums;
+  }
+
+  trackMatchWith(trackName) {
     return this.artists
-    .flatMap((artist) => artist.albums)
-    .filter((album) => album.name.toLowerCase().includes(albumName.toLowerCase()));
-  }
-
-  trackMatchWith(trackName){
-    return this.artists
-    .flatMap((artist) => artist.albums)
-    .flatMap((album) => album.tracks)
-    .filter((track) => track.name.toLowerCase().includes(trackName.toLowerCase()));
-  }
-
-  playlistMatchWith(playlistName){
-    return this.playlists.filter((playlist) =>
-      playlist.name.toLowerCase().includes(playlistName.toLowerCase())
+      .flatMap((artist) => artist.albums)
+      .flatMap((album) => album.tracks)
+      .filter((track) =>
+        track.name.toLowerCase().includes(trackName.toLowerCase())
       );
   }
 
-  playlistMatchWithNameAndDuration(playlistName,min,max){
-    return this.playlists.filter((playlist) => playlist.name.toLowerCase().includes(playlistName.toLowerCase()) 
-                                  && playlist.getDuration() >= min 
-                                  && playlist.getDuration() <= max );
+  playlistMatchWith(playlistName) {
+    return this.playlists.filter((playlist) =>
+      playlist.name.toLowerCase().includes(playlistName.toLowerCase())
+    );
   }
 
-
-
+  playlistMatchWithNameAndDuration(playlistName, min, max) {
+    return this.playlists.filter(
+      (playlist) =>
+        playlist.name.toLowerCase().includes(playlistName.toLowerCase()) &&
+        playlist.getDuration() >= min &&
+        playlist.getDuration() <= max
+    );
+  }
 
   addUser(userData) {
     let user = this.createUser(userData);
@@ -592,7 +589,6 @@ class UNQfy {
     }
   }
 
-
   createAlbumsFromArtist(artist, response) {
     response.items.forEach((alb) =>
       this.addAlbumBySpotify(artist.getId().toString(), {
@@ -605,49 +601,43 @@ class UNQfy {
   addAlbumBySpotify(artistId, albumData) {
     let artist = this.getArtistById(artistId);
     // if (this.albumDuplicatedOnArtist(artist, albumData)) { //Consultar Profe
-     // throw new InvalidArtist(artist.getId());}
-      let album = this.createAlbum(artistId, albumData);
-      artist.albums.push(album);
-      return album;
+    // throw new InvalidArtist(artist.getId());}
+    let album = this.createAlbum(artistId, albumData);
+    artist.albums.push(album);
+    return album;
   }
 
-
-
-
-   getLyrics(trackName) {
+  getLyrics(trackName) {
     let track = this.getTrackByName(trackName);
     if (track !== undefined) {
       if (track.lyrics === "") {
-       return track.getLyrics()
-       .then((lyrics) => {
-         this.save("data.json")
-          return lyrics
-       })
-    } else {
-      return  Promise.resolve(track.lyrics);
-     }
+        return track.getLyrics().then((lyrics) => {
+          this.save("data.json");
+          return lyrics;
+        });
+      } else {
+        return Promise.resolve(track.lyrics);
+      }
     } else {
       throw EntityNameDoesntExist("Track", trackName);
     }
   }
-
-
-
 
   getAllArtist() {
     return this.artists;
   }
 
   getAllAlbums() {
-    return this.artists.flatMap(artist => artist.albums).filter(album => album != null);
+    let albums = this.artists
+      .flatMap((artist) => artist.albums)
+      .filter((album) => album != null);
+    albums.forEach((album) => delete album.artistId);
+    return albums;
   }
 
-  hola(){
+  hola() {
     return console.log("hola");
   }
-
-
-
 
   save(filename) {
     const serializedData = picklify.picklify(this);
