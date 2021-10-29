@@ -9,13 +9,11 @@ class Track {
     this.lyrics = "";
   }
 
-  
-   getLyrics() {
-    
-         return musixmatch.default.getTrackLyric(this.name)
-          .then(response => this.lyrics = response.message.body.lyrics.lyrics_body)
-          .then(() => this.lyrics)
-          .catch(() => console.log("The song has not lyrics."));
+  getLyrics() {
+      return musixmatch.getTrackLyric(this.name)
+        .then(response => this.lyrics = response.message.body.lyrics.lyrics_body)
+        .then(() => this.lyrics)
+        .catch(() => console.log("The song has not lyrics."));
     
   }
 }

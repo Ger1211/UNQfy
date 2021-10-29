@@ -34,4 +34,4 @@ const musixmatch = (() => {
   };
 })();
 
-exports.default = musixmatch;
+module.exports = musixmatch;
