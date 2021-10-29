@@ -54,46 +54,6 @@ async function main() {
   let invocation = arguments_[0];
 
   execFunction(invocation, unqfy, arguments_);
-  
-
-   //spotify.default.getAllAlbumsFromArtist("Guns And Roses").then(response => {
-   // console.log(response.items.map(item => item.name))});
-  // musixmatch.default.getTrackLyric("Despacito Luis Fonsi");
-  
-  // musixmatch.default.getTrackLyric("Ciudad Mágica");
-  // musixmatch.default.getTrackLyric("Rasguña las piedras")
-   // musixmatch.default.getTrackLyric("Gracias a la vida")
-   // musixmatch.default.getTrackLyric("Bohemiam Rhapsody")
-    //  .then(response => console.log(response.message.body.lyrics.lyrics_body))
-    //  .catch(() => console.log("The song has not lyrics."));
-
-  //unqfy.allAlbumsOfArtist(5);
-  //console.log(unqfy.getArtistById(4))
-  //unqfy.deleteArtistById(4);
- //console.log(unqfy.getArtistById(1))
-
- //unqfy.deleteArtistById(6)
-  //saveUNQfy(unqfy);
-
-  //unqfy.getLyrics("Rasguña las piedras");
-  //console.log(unqfy.getTrackById(1));
-
- //console.log( unqfy.getTrackById(11).lyrics);
-//console.log(unqfy.getLyrics("Rasguña las piedras"));
-
-
-//borrar
-//console.log(unqfy.getTracks([1,2,3]));
-//console.log(unqfy.getTrackById(1));
-//console.log(unqfy.getTrackById(2));
-//console.log(unqfy.getTrackById(3));
-//console.log(unqfy.getPlaylistById(6));
-
-//console.log(unqfy.playlists);
-//unqfy.deletePlaylist(3);
-
-//console.log(unqfy.playlistMatchWithNameAndDuration("Exitos",7,9));
-
 }
 
 main();
