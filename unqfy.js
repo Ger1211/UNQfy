@@ -607,19 +607,19 @@ class UNQfy {
     return album;
   }
 
-  getLyrics(trackName) {
+  getLyrics(trackName) { //Nota: todos los returns devuelven Promesas.
     let track = this.getTrackByName(trackName);
     if (track !== undefined) {
       if (track.lyrics === "") {
         return track.getLyrics().then((lyrics) => {
           this.save("data.json");
-          return lyrics; //Devuelve promesa
+          return lyrics; 
         });
       } else {
         return Promise.resolve(track.lyrics);
       }
     } else {
-      return Promise.reject(EntityNameDoesntExist("Track", trackName));
+      return Promise.reject( new EntityNameDoesntExist("Track", trackName));
     }
   }
 
