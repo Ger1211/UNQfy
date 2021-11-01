@@ -613,13 +613,13 @@ class UNQfy {
       if (track.lyrics === "") {
         return track.getLyrics().then((lyrics) => {
           this.save("data.json");
-          return lyrics;
+          return lyrics; //Devuelve promesa
         });
       } else {
         return Promise.resolve(track.lyrics);
       }
     } else {
-      throw EntityNameDoesntExist("Track", trackName);
+      return Promise.reject(EntityNameDoesntExist("Track", trackName));
     }
   }
 
