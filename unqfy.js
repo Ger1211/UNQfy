@@ -593,7 +593,7 @@ class UNQfy {
     response.items.forEach((alb) =>
       this.addAlbumBySpotify(artist.getId().toString(), {
         name: alb.name,
-        year: alb.release_date,
+        year: parseInt(alb.release_date.substring(0,4)),
       })
     );
   }

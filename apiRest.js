@@ -335,18 +335,19 @@ router
 
 
 
-app.use((err, req, res, next) => {
-  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
-    return res.status(400).send({ status: 400, errorCode: "BAD_REQUEST" });
-  }
-  next();
-});
-app.use("/api", router);
-app.use(function (req, res) {
-  res.status(404);
-  res.json({
-    status: 404,
-    errorCode: "RESOURCE_NOT_FOUND",
+  app.use("/api", router);
+  app.use(function (req, res) {
+    res.status(404);
+    res.json({
+      status: 404,
+      errorCode: "RESOURCE_NOT_FOUND",
+    });
+    // next(new Error)
   });
-});
+  app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+      return res.status(400).send({ status: 400, errorCode: "BAD_REQUEST" });
+    }
+    next();
+  });
 app.listen(port, () => console.log(`Port ${port} listening`));
