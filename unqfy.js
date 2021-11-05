@@ -579,13 +579,13 @@ class UNQfy {
   populateAlbumsForArtist(artistName) {
     let artist = this.getArtistByName(artistName);
     if (artist != undefined) {
-      spotify
+      spotify          //Falta return?
         .getAllAlbumsFromArtist(artistName)
         .then((response) => this.createAlbumsFromArtist(artist, response))
         .then(() => this.save("data.json"))
         .catch((error) => console.log(error.message));
     } else {
-      throw new EntityNameDoesntExist("Artist", artistName);
+        return Promise.reject( new EntityNameDoesntExist("Artist", artistName));
     }
   }
 
