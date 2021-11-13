@@ -9,6 +9,7 @@ const Listened = require("./domain/listened");
 const spotify = require("./services/spotify");
 const musixmatch = require("./services/musixmatch");
 
+
 const {
   EntityIdDoesntExist,
   EntityNameDoesntExist,
@@ -27,6 +28,11 @@ class UNQfy {
     this.nextTrackId = 1;
     this.nextPlaylistId = 1;
     this.nextUserId = 1;
+    this.observers = [];
+  }
+
+  addObserver(observer){
+    this.observers = observer;
   }
 
   // artistData: objeto JS con los datos necesarios para crear un artista
@@ -46,6 +52,7 @@ class UNQfy {
       let artist = this.createArtist(artistData);
       this.artists.push(artist);
       this.save("data.json");
+      this.notify(artistData,"artists")
       return artist;
     }
   }
@@ -96,9 +103,16 @@ class UNQfy {
       artist.albums.push(album);
       this.save("data.json");
       delete album.artistId;
+      this.notify(albumData,"albums")
       return album;
     }
   }
+
+
+notify(data,action){
+  this.observers.forEach(observer => observer.notify(data,action));
+}
+
 
   albumDuplicatedOnArtist(artist, albumData) {
     return artist.albums.some(
@@ -149,11 +163,12 @@ class UNQfy {
     if (this.doesntExistAlbum(album)) {
       throw new AlbumIdNotFound();
     } else if (this.trackDuplicatedOnAlbum(album, trackData)) {
-      throw new EntityNameDuplicated("Track", trackData.name);
+        throw new EntityNameDuplicated("Track", trackData.name);
     } else {
       let track = this.createTrack(albumId, trackData);
       album.tracks.push(track);
       this.save("data.json");
+      this.notify(trackData,"tracks")
       return track;
     }
   }
