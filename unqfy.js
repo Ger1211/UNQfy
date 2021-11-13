@@ -9,7 +9,6 @@ const Listened = require("./domain/listened");
 const spotify = require("./services/spotify");
 const musixmatch = require("./services/musixmatch");
 
-
 const {
   EntityIdDoesntExist,
   EntityNameDoesntExist,
@@ -17,6 +16,8 @@ const {
   AlbumIdNotFound,
   InvalidArtist,
 } = require("./exceptions/exceptions");
+const NewsletterObserver = require("./observers/newsletterObserver");
+const LoggingObserver = require("./observers/loggingObserver");
 
 class UNQfy {
   constructor() {
@@ -28,11 +29,7 @@ class UNQfy {
     this.nextTrackId = 1;
     this.nextPlaylistId = 1;
     this.nextUserId = 1;
-    this.observers = [];
-  }
-
-  addObserver(observer){
-    this.observers = observer;
+    this.observers = [new NewsletterObserver(), new LoggingObserver()];
   }
 
   // artistData: objeto JS con los datos necesarios para crear un artista
@@ -52,7 +49,7 @@ class UNQfy {
       let artist = this.createArtist(artistData);
       this.artists.push(artist);
       this.save("data.json");
-      this.notify(artistData,"artists")
+      this.notify(artistData, "artists");
       return artist;
     }
   }
@@ -103,16 +100,18 @@ class UNQfy {
       artist.albums.push(album);
       this.save("data.json");
       delete album.artistId;
-      this.notify(albumData,"albums")
+      let data = {};
+      data.artistId = artistId;
+      data.artistName = artist.name;
+      data.albumName = album.name;
+      this.notify(data, "albums");
       return album;
     }
   }
 
-
-notify(data,action){
-  this.observers.forEach(observer => observer.notify(data,action));
-}
-
+  notify(data, action) {
+    this.observers.forEach((observer) => observer.notify(data, action));
+  }
 
   albumDuplicatedOnArtist(artist, albumData) {
     return artist.albums.some(
@@ -163,12 +162,12 @@ notify(data,action){
     if (this.doesntExistAlbum(album)) {
       throw new AlbumIdNotFound();
     } else if (this.trackDuplicatedOnAlbum(album, trackData)) {
-        throw new EntityNameDuplicated("Track", trackData.name);
+      throw new EntityNameDuplicated("Track", trackData.name);
     } else {
       let track = this.createTrack(albumId, trackData);
       album.tracks.push(track);
       this.save("data.json");
-      this.notify(trackData,"tracks")
+      this.notify(trackData, "tracks");
       return track;
     }
   }
@@ -594,13 +593,13 @@ notify(data,action){
   populateAlbumsForArtist(artistName) {
     let artist = this.getArtistByName(artistName);
     if (artist != undefined) {
-      spotify          //Falta return?
+      spotify //Falta return?
         .getAllAlbumsFromArtist(artistName)
         .then((response) => this.createAlbumsFromArtist(artist, response))
         .then(() => this.save("data.json"))
         .catch((error) => console.log(error.message));
     } else {
-        return Promise.reject( new EntityNameDoesntExist("Artist", artistName));
+      return Promise.reject(new EntityNameDoesntExist("Artist", artistName));
     }
   }
 
@@ -608,7 +607,7 @@ notify(data,action){
     response.items.forEach((alb) =>
       this.addAlbumBySpotify(artist.getId().toString(), {
         name: alb.name,
-        year: parseInt(alb.release_date.substring(0,4)),
+        year: parseInt(alb.release_date.substring(0, 4)),
       })
     );
   }
@@ -622,19 +621,20 @@ notify(data,action){
     return album;
   }
 
-  getLyrics(trackName) { //Nota: todos los returns devuelven Promesas.
+  getLyrics(trackName) {
+    //Nota: todos los returns devuelven Promesas.
     let track = this.getTrackByName(trackName);
     if (track !== undefined) {
       if (track.lyrics === "") {
         return track.getLyrics().then((lyrics) => {
           this.save("data.json");
-          return lyrics; 
+          return lyrics;
         });
       } else {
         return Promise.resolve(track.lyrics);
       }
     } else {
-      return Promise.reject( new EntityNameDoesntExist("Track", trackName));
+      return Promise.reject(new EntityNameDoesntExist("Track", trackName));
     }
   }
 
@@ -662,7 +662,7 @@ notify(data,action){
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: "utf-8" });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track, Playlist, User, Listened];
+    const classes = [UNQfy, Artist, Album, Track, Playlist, User, Listened, NewsletterObserver, LoggingObserver];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }

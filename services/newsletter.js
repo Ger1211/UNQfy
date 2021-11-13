@@ -1,19 +1,17 @@
 const rp = require("request-promise");
 const newsletter = (() => {
-  function sendAlbumInfo(albumData) {
+  function notify(data) {
     const options = {
-      url: `http://localhost:3001/api/newAlbums`,
-      body: albumData,
+      url: `http://localhost:3001/api/notify`,
+      body: data,
       json: true,
     };
     return rp.post(options)
         .then((response) =>  console.log(response));
   }
   
- 
-  
   return {
-    sendAlbumInfo: sendAlbumInfo,
+    notify: notify,
   };
 })();
 
