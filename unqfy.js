@@ -18,6 +18,7 @@ const {
 } = require("./exceptions/exceptions");
 const NewsletterObserver = require("./observers/newsletterObserver");
 const LoggingObserver = require("./observers/loggingObserver");
+const newsletter = require("./services/newsletter");
 
 class UNQfy {
   constructor() {
@@ -315,7 +316,9 @@ class UNQfy {
       );
       artistToDelete.deleteAllAlbums();
       this.artists.splice(indexToDelete, 1);
-      this.save("data.json");
+      newsletter
+        .deleteSubscriptions({ artistId: artistToDelete.id })
+        .then(() => this.save("data.json"));
     }
   }
 
@@ -662,7 +665,17 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: "utf-8" });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track, Playlist, User, Listened, NewsletterObserver, LoggingObserver];
+    const classes = [
+      UNQfy,
+      Artist,
+      Album,
+      Track,
+      Playlist,
+      User,
+      Listened,
+      NewsletterObserver,
+      LoggingObserver,
+    ];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }

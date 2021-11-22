@@ -6,12 +6,21 @@ const newsletter = (() => {
       body: data,
       json: true,
     };
-    return rp.post(options)
-        .then((response) =>  console.log(response));
+    return rp.post(options);
   }
-  
+
+  function deleteSubscriptions(data) {
+    const options = {
+      url: `http://localhost:3001/api/subscriptions`,
+      body: data,
+      json: true,
+    };
+    return rp.delete(options);
+  }
+
   return {
     notify: notify,
+    deleteSubscriptions: deleteSubscriptions,
   };
 })();
 
