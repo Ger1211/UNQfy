@@ -33,17 +33,9 @@ class UNQfy {
     this.observers = [new NewsletterObserver(), new LoggingObserver()];
   }
 
-  // artistData: objeto JS con los datos necesarios para crear un artista
-  //   artistData.name (string)
-  //   artistData.country (string)
-  // retorna: el nuevo artista creado
-  addArtist(artistData) {
-    /* Crea un artista y lo agrega a unqfy.
-  El objeto artista creado debe soportar (al menos):
-    - una propiedad name (string)
-    - una propiedad country (string)
-  */
 
+  addArtist(artistData) {
+ 
     if (this.existArtist(artistData)) {
       throw new EntityNameDuplicated("Artist", artistData.name);
     } else {
@@ -81,16 +73,9 @@ class UNQfy {
     return artist;
   }
 
-  // albumData: objeto JS con los datos necesarios para crear un album
-  //   albumData.name (string)
-  //   albumData.year (number)
-  // retorna: el nuevo album creado
+  
   addAlbum(artistId, albumData) {
-    /* Crea un album y lo agrega al artista con id artistId.
-    El objeto album creado debe tener (al menos):
-     - una propiedad name (string)
-     - una propiedad year (number)
-  */
+
     let artist = this.getArtistById(artistId);
     if (this.doesntExistArtist(artist)) {
       throw new EntityIdDoesntExist("Artist", artistId);
@@ -147,18 +132,9 @@ class UNQfy {
     return album;
   }
 
-  // trackData: objeto JS con los datos necesarios para crear un track
-  //   trackData.name (string)
-  //   trackData.duration (number)
-  //   trackData.genres (lista de strings)
-  // retorna: el nuevo track creado
+
   addTrack(albumId, trackData) {
-    /* Crea un track y lo agrega al album con id albumId.
-  El objeto track creado debe tener (al menos):
-      - una propiedad name (string),
-      - una propiedad duration (number),
-      - una propiedad genres (lista de strings)
-  */
+ 
     let album = this.getAlbumById(albumId);
     if (this.doesntExistAlbum(album)) {
       throw new AlbumIdNotFound();
@@ -270,6 +246,7 @@ class UNQfy {
     if (this.doesntExistTrackByName(name)) {
       throw new EntityNameDoesntExist("Track", name);
     } else {
+      const trackToDelete = this.getTrackByName(name)
       this.artists
         .flatMap((artist) => artist.albums)
         .find((album) => album.tracks.some((track) => track.name === name))
@@ -279,6 +256,7 @@ class UNQfy {
           playlist.tracks.some((track) => track.name === name)
         )
         .forEach((playlist) => playlist.eraseTrack(name));
+        this.notify(trackToDelete, "deleteTrack");
       this.save("data.json");
     }
   }
@@ -298,6 +276,7 @@ class UNQfy {
       );
       albumToDelete.tracks.forEach((track) => this.deleteTrack(track.name));
       artistOwnerAlbum.albums.splice(indexToDelete, 1);
+      this.notify(albumToDelete, "deleteAlbum");
       this.save("data.json");
     }
   }
@@ -316,6 +295,7 @@ class UNQfy {
       );
       artistToDelete.deleteAllAlbums();
       this.artists.splice(indexToDelete, 1);
+      this.notify(artistToDelete, "deleteArtist");
       newsletter
         .deleteSubscriptions({ artistId: artistToDelete.id })
         .then(() => this.save("data.json"));
