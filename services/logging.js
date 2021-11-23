@@ -1,17 +1,16 @@
 const rp = require("request-promise");
 const logging = (() => {
-  function sendInfo(data,action) {
+  function sendArtistCreation(data) {
     const options = {
-      url: `http://localhost:3001/api/${action}`,
+      url: `http://localhost:3002/api/artists/creation`,
       body: data,
       json: true,
     };
-    return rp.post(options)
-        .then((response) =>  console.log(response));
+    return rp.post(options);
   }
     
   return {
-    sendInfo: sendInfo,
+    sendArtistCreation: sendArtistCreation,
   };
 })();
 
