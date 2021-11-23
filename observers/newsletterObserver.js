@@ -7,6 +7,8 @@ class NewsletterObserver {
       dataInfo.subject = `Nuevo Album para artista ${data.artistName}`;
       dataInfo.message = `Se ha agregado el album ${data.albumName} al artista ${data.artistName}`;
       newsletter.notify(dataInfo);
+    } else if (action === "deleteArtist") {
+      newsletter.deleteSubscriptions(data);
     }
   }
 }

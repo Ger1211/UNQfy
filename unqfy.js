@@ -296,9 +296,7 @@ class UNQfy {
       artistToDelete.deleteAllAlbums();
       this.artists.splice(indexToDelete, 1);
       this.notify(artistToDelete, "deleteArtist");
-      newsletter
-        .deleteSubscriptions({ artistId: artistToDelete.id })
-        .then(() => this.save("data.json"));
+      this.save("data.json");
     }
   }
 
