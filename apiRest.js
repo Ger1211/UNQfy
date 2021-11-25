@@ -16,9 +16,8 @@ let port = process.env.PORT || 8080;
 app.use(express.json());
 
 router
-  .get("/", function (req, res) {
-    res.status(200);
-    res.json({ message: "hooray! welcome to our API" });
+  .get("/status", function (req, res) {
+    res.status(200).send();
   })
   .get("/artists/:artistId", function (req, res) {
     const artistId = req.params.artistId;
