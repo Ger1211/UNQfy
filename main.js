@@ -1,8 +1,8 @@
 const fs = require("fs"); // necesitado para guardar/cargar unqfy
-const unqfy = require("./unqfy");
-const unqmod = require("./unqfy"); // importamos el modulo unqfy
-const spotify = require("./services/spotify");
-const musixmatch = require("./services/musixmatch")
+const unqfy = require("./src/unqfy");
+const unqmod = require("./src/unqfy"); // importamos el modulo unqfy
+const spotify = require("./src/services/spotify");
+const musixmatch = require("./src/services/musixmatch")
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = "data.json") {

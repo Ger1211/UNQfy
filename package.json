@@ -7,8 +7,8 @@
     "body": "^5.1.0",
     "chai": "^4.1.2",
     "express": "^4.17.1",
-    "Parser": "^0.0.1",
-    "picklify": "github:lwoites/picklify",
+    "parser": "^0.1.4",
+    "picklify": "^1.0.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
   },
@@ -20,7 +20,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "eslint": "node_modules/.bin/eslint *.js"
+    "eslint": "node_modules/.bin/eslint *.js",
+    "api": "node ./src/apiRest.js"
   },
   "author": "",
   "license": "ISC"

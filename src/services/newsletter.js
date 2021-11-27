@@ -1,8 +1,12 @@
 const rp = require("request-promise");
+
+const BASE_URL = process.env.NEWSLETTER_HOST + "/api"
+// const BASE_URL = "http://localhost:3001/api"
+
 const newsletter = (() => {
   function notify(data) {
     const options = {
-      url: `http://localhost:3001/api/notify`,
+      url: `${BASE_URL}/notify`,
       body: data,
       json: true,
     };
@@ -11,7 +15,7 @@ const newsletter = (() => {
 
   function deleteSubscriptions(data) {
     const options = {
-      url: `http://localhost:3001/api/subscriptions`,
+      url: `${BASE_URL}/subscriptions`,
       body: data,
       json: true,
     };

@@ -631,10 +631,6 @@ class UNQfy {
     return albums;
   }
 
-  hola() {
-    return console.log("hola");
-  }
-
   save(filename) {
     const serializedData = picklify.picklify(this);
     fs.writeFileSync(filename, JSON.stringify(serializedData, null, 2));
