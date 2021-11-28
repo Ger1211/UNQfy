@@ -7,7 +7,9 @@ const Playlist = require("./domain/playlist");
 const User = require("./domain/user");
 const Listened = require("./domain/listened");
 const spotify = require("./services/spotify");
-const musixmatch = require("./services/musixmatch");
+const NewsletterObserver = require("./observers/newsletterObserver");
+const LoggingObserver = require("./observers/loggingObserver");
+
 
 const {
   EntityIdDoesntExist,
@@ -16,12 +18,8 @@ const {
   AlbumIdNotFound,
   InvalidArtist,
 } = require("./exceptions/exceptions");
-const NewsletterObserver = require("./observers/newsletterObserver");
-const LoggingObserver = require("./observers/loggingObserver");
-const newsletter = require("./services/newsletter");
-
 class UNQfy {
-  constructor() {
+  constructor(_observers) {
     this.playlists = [];
     this.artists = [];
     this.users = [];
@@ -30,7 +28,7 @@ class UNQfy {
     this.nextTrackId = 1;
     this.nextPlaylistId = 1;
     this.nextUserId = 1;
-    this.observers = [new NewsletterObserver(), new LoggingObserver()];
+    this.observers = _observers;
   }
 
 

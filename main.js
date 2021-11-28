@@ -3,10 +3,13 @@ const unqfy = require("./src/unqfy");
 const unqmod = require("./src/unqfy"); // importamos el modulo unqfy
 const spotify = require("./src/services/spotify");
 const musixmatch = require("./src/services/musixmatch")
+const NewsletterObserver = require("./src/observers/newsletterObserver");
+const LoggingObserver = require("./src/observers/loggingObserver");
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = "data.json") {
-  let unqfy = new unqmod.UNQfy();
+  let observers = [new NewsletterObserver(), new LoggingObserver()];
+  let unqfy = new unqmod.UNQfy(observers);
   if (fs.existsSync(filename)) {
     unqfy = unqmod.UNQfy.load(filename);
   }

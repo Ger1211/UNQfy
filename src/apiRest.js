@@ -1,8 +1,11 @@
 const fs = require("fs"); // necesitado para guardar/cargar unqfy
 const unqmod = require("./unqfy"); // importamos el modulo unqfy
+const NewsletterObserver = require("./observers/newsletterObserver");
+const LoggingObserver = require("./observers/loggingObserver");
 
 function getUNQfy(filename = "data.json") {
-  let unqfy = new unqmod.UNQfy();
+  let observers = [new NewsletterObserver(), new LoggingObserver()];
+  let unqfy = new unqmod.UNQfy(observers);
   if (fs.existsSync(filename)) {
     unqfy = unqmod.UNQfy.load(filename);
   }
@@ -73,7 +76,7 @@ router
     }
   })
   .put("/artists/:artistId", function (req, res) {
-    if(req.body.name && req.body.country){
+    if (req.body.name && req.body.country) {
       const artistId = req.params.artistId;
       const artista = getUNQfy().getArtistById(artistId);
       if (artista !== undefined) {
@@ -91,7 +94,7 @@ router
           statusCode: res.statusCode,
         });
       }
-    }else{
+    } else {
       res.status(400);
       res.json({
         status: 400,
@@ -208,7 +211,7 @@ router
     }
   })
   .patch("/albums/:albumId", function (req, res) {
-    if(req.body.year){
+    if (req.body.year) {
       const albumId = req.params.albumId;
       const album = getUNQfy().getAlbumById(albumId);
       if (album !== undefined) {
@@ -223,12 +226,12 @@ router
           statusCode: res.statusCode,
         });
       }
-    }else{
+    } else {
       res.status(400);
       res.json({
         status: 400,
         errorCode: "BAD_REQUEST",
-        });
+      });
     }
   })
   .post("/playlists", function (req, res) {
@@ -237,8 +240,8 @@ router
       const maxDuration = req.body.maxDuration;
       const genres = req.body.genres;
       const tracks = req.body.tracks;
-      if(tracks === undefined) {
-        if (req.body.name && req.body.maxDuration && req.body.genres){
+      if (tracks === undefined) {
+        if (req.body.name && req.body.maxDuration && req.body.genres) {
           newPlaylist = getUNQfy().createPlaylist(
             playlistName,
             genres,
@@ -246,7 +249,7 @@ router
           );
           res.status(201);
           res.json(newPlaylist);
-        }else{
+        } else {
           res.status(400);
           res.json({
             status: 400,
@@ -254,21 +257,22 @@ router
           });
         }
       } else {
-        if(req.body.name && req.body.tracks){
+        if (req.body.name && req.body.tracks) {
           newPlaylist = getUNQfy().createPlaylistWithSetOfTracks(
             playlistName,
             tracks
           );
           res.status(201);
           res.json(newPlaylist);
-      }else{
-        res.status(400);
+        } else {
+          res.status(400);
           res.json({
             status: 400,
             errorCode: "BAD_REQUEST",
           });
+        }
       }
-    }}catch (error) {
+    } catch (error) {
       res.status(400);
       res.json({ errorMessage: error.message, statusCode: res.statusCode });
     }
@@ -307,46 +311,46 @@ router
       });
     }
   })
-  .get("/tracks/:trackId/lyrics",  function (req, res) {
+  .get("/tracks/:trackId/lyrics", function (req, res) {
     const trackId = req.params.trackId;
     const track = getUNQfy().getTrackById(trackId);
 
-    if (track === undefined){
+    if (track === undefined) {
       res.status(404);
       res.json({
         errorMessage: `RESOURCE_NOT_FOUND`,
         statusCode: res.statusCode,
       });
-    }else{
-      getUNQfy().getLyrics(track.name)
-      .then((lyric) => {
-        const result = {
-          name: track.name,
-          lyrics: lyric,
-        };
-        return result;
-      }).then((lyrics)=> {
-        res.status(200);
-        res.json(lyrics);
-      })
+    } else {
+      getUNQfy()
+        .getLyrics(track.name)
+        .then((lyric) => {
+          const result = {
+            name: track.name,
+            lyrics: lyric,
+          };
+          return result;
+        })
+        .then((lyrics) => {
+          res.status(200);
+          res.json(lyrics);
+        });
     }
   });
 
-
-
-  app.use("/api", router);
-  app.use(function (req, res) {
-    res.status(404);
-    res.json({
-      status: 404,
-      errorCode: "RESOURCE_NOT_FOUND",
-    });
-    // next(new Error)
+app.use("/api", router);
+app.use(function (req, res) {
+  res.status(404);
+  res.json({
+    status: 404,
+    errorCode: "RESOURCE_NOT_FOUND",
   });
-  app.use((err, req, res, next) => {
-    if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
-      return res.status(400).send({ status: 400, errorCode: "BAD_REQUEST" });
-    }
-    next();
-  });
+  // next(new Error)
+});
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res.status(400).send({ status: 400, errorCode: "BAD_REQUEST" });
+  }
+  next();
+});
 app.listen(port, () => console.log(`Port ${port} listening`));

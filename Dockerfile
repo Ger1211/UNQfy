@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:14
 
 ENV NEWSLETTER_HOST 'http://host.docker.internal:3001'
 ENV LOGGING_HOST 'http://host.docker.internal:3002'
