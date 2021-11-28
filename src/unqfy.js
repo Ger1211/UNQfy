@@ -28,7 +28,7 @@ class UNQfy {
     this.nextTrackId = 1;
     this.nextPlaylistId = 1;
     this.nextUserId = 1;
-    this.observers = [];
+    this.observers = _observers;
   }
 
 
