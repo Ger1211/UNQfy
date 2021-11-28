@@ -28,7 +28,7 @@ class UNQfy {
     this.nextTrackId = 1;
     this.nextPlaylistId = 1;
     this.nextUserId = 1;
-    this.observers = _observers;
+    this.observers = [];
   }
 
 
@@ -625,8 +625,18 @@ class UNQfy {
     let albums = this.artists
       .flatMap((artist) => artist.albums)
       .filter((album) => album != null);
-    albums.forEach((album) => delete album.artistId);
-    return albums;
+    return this.createAlbumsResponse(albums);
+  }
+
+  createAlbumsResponse(albums) {
+    return albums.map(album => {
+      return {
+        id : album.id,
+        name: album.name,
+        year: album.year,
+        tracks: album.tracks,
+      }
+    })
   }
 
   save(filename) {
