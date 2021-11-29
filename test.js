@@ -22,7 +22,7 @@ describe('Add, remove and filter data', () => {
   let unqfy = null;
 
   beforeEach(() => {
-    unqfy = new libunqfy.UNQfy();
+    unqfy = new libunqfy.UNQfy([]);
   });
 
   it('should add an artist', () => {
@@ -120,7 +120,7 @@ describe('Playlist Creation and properties', () => {
   let unqfy = null;
 
   beforeEach(() => {
-    unqfy = new libunqfy.UNQfy();
+    unqfy = new libunqfy.UNQfy([]);
   });
 
   it('should create a playlist as requested', () => {
