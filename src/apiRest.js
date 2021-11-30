@@ -75,6 +75,12 @@ router
       });
     }
   })
+  .post("/artists/populate/:artistName", function(req, res) {
+    if(req.params.artistName) {
+      getUNQfy().populateAlbumsForArtist(req.params.artistName)
+        .then(() => res.status(200).send());
+    }
+  })
   .put("/artists/:artistId", function (req, res) {
     if (req.body.name && req.body.country) {
       const artistId = req.params.artistId;
@@ -309,6 +315,12 @@ router
         errorMessage: `There is no result for the playlist with the name ${playlistName} and the given duration`,
         statusCode: res.statusCode,
       });
+    }
+  })
+  .post("/tracks/:albumId", function(req, res) {
+    let track = getUNQfy().addTrack(req.params.albumId, req.body);
+    if(track !== undefined) {
+      res.status(200).send();
     }
   })
   .get("/tracks/:trackId/lyrics", function (req, res) {

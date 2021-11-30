@@ -572,7 +572,7 @@ class UNQfy {
   populateAlbumsForArtist(artistName) {
     let artist = this.getArtistByName(artistName);
     if (artist != undefined) {
-      spotify //Falta return?
+      return spotify
         .getAllAlbumsFromArtist(artistName)
         .then((response) => this.createAlbumsFromArtist(artist, response))
         .then(() => this.save("data.json"))

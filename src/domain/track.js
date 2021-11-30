@@ -11,7 +11,11 @@ class Track {
 
   getLyrics() {
       return musixmatch.getTrackLyric(this.name)
-        .then(response => this.lyrics = response.message.body.lyrics.lyrics_body)
+        .then(response => {
+          console.log(response);
+          this.lyrics = response.message.body.lyrics.lyrics_body;
+          return this.lyrics;
+        } )
         .then(() => this.lyrics)
         .catch(() => console.log("The song has not lyrics."));
     
